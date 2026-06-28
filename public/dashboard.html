@@ -5,19 +5,46 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Redirecting...</title>
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const token = localStorage.getItem('token');
-            const role = localStorage.getItem('userRole');
+        document.addEventListener('DOMContentLoaded', async () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const urlToken = urlParams.get('token');
             
-            if (!token || !role) {
+            if (urlToken) {
+                localStorage.setItem('token', urlToken);
+            }
+            
+            const token = localStorage.getItem('token');
+            let role = localStorage.getItem('userRole');
+            
+            if (!token) {
                 window.location.replace('login.html');
                 return;
             }
             
+            if (!role && token) {
+                try {
+                    const response = await fetch('https://eduport-1.onrender.com/api/users/me', {
+                        headers: { 'x-auth-token': token }
+                    });
+                    if (response.ok) {
+                        const user = await response.json();
+                        role = user.role;
+                        if (role) {
+                            localStorage.setItem('userRole', role);
+                        }
+                    }
+                } catch (error) {
+                    console.error('Failed to fetch role:', error);
+                }
+            }
+            
             if (role === 'teacher') {
-                window.location.replace('teacher-dashboard.html' + window.location.search);
+                window.location.replace('teacher-dashboard.html');
             } else if (role === 'student') {
-                window.location.replace('student-dashboard.html' + window.location.search);
+                window.location.replace('student-dashboard.html');
+            } else if (!role) {
+                // If it's a new user, they might not have a role yet. Go to role-selection
+                window.location.replace('role-selection.html');
             } else {
                 window.location.replace('login.html');
             }
