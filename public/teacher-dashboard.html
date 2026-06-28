@@ -496,7 +496,7 @@
       // Load user profile
       async function loadUserProfile() {
         const token = localStorage.getItem('token');
-        const response = await fetch('http://localhost:3000/api/users/me', {
+        const response = await fetch('https://eduport-1.onrender.com/api/users/me', {
           headers: { 'Authorization': `Bearer ${token}` }
         });
         
@@ -510,7 +510,7 @@
       // Load all projects
       async function loadAllProjects() {
         const token = localStorage.getItem('token');
-        const response = await fetch('http://localhost:3000/api/projects/community', {
+        const response = await fetch('https://eduport-1.onrender.com/api/projects/community', {
           headers: { 'Authorization': `Bearer ${token}` }
         });
         
@@ -770,7 +770,7 @@
         }
 
         try {
-          const response = await fetch(`http://localhost:3000/api/projects/${projectId}/${voteType}`, {
+          const response = await fetch(`https://eduport-1.onrender.com/api/projects/${projectId}/${voteType}`, {
             method: 'PUT',
             headers: { 
               'Authorization': `Bearer ${token}`,
@@ -892,9 +892,9 @@
         }
 
         try {
-          console.log('Sending comment request to:', `http://localhost:3000/api/projects/${projectId}/comments`);
+          console.log('Sending comment request to:', `https://eduport-1.onrender.com/api/projects/${projectId}/comments`);
           
-          const response = await fetch(`http://localhost:3000/api/projects/${projectId}/comments`, {
+          const response = await fetch(`https://eduport-1.onrender.com/api/projects/${projectId}/comments`, {
             method: 'POST',
             headers: {
               'Authorization': `Bearer ${token}`,

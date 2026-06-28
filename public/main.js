@@ -64,7 +64,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             try {
                 // Send the data to the backend's POST /login route
-                const response = await fetch('http://localhost:3000/login', {
+                const response = await fetch('https://eduport-1.onrender.com/login', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -130,7 +130,7 @@ document.addEventListener('DOMContentLoaded', function () {
     if (googleBtn) {
         googleBtn.addEventListener('click', () => {
             // Redirect the user to the backend's Google auth route
-            window.location.href = 'http://localhost:3000/auth/google';
+            window.location.href = 'https://eduport-1.onrender.com/auth/google';
         });
     }
 

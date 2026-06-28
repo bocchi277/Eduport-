@@ -56,7 +56,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
             try {
                 // Send the data to the backend's POST /register route
-                const response = await fetch('http://localhost:3000/register', {
+                const response = await fetch('https://eduport-1.onrender.com/register', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -94,7 +94,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const googleBtn = document.querySelector('.social-btn.google');
     if (googleBtn) {
         googleBtn.addEventListener('click', () => {
-            window.location.href = 'http://localhost:3000/auth/google';
+            window.location.href = 'https://eduport-1.onrender.com/auth/google';
         });
     }
 });

@@ -359,7 +359,7 @@
           return;
         }
 
-        const response = await fetch("http://localhost:3000/api/projects/community", {
+        const response = await fetch("https://eduport-1.onrender.com/api/projects/community", {
           headers: {
             "x-auth-token": token,
           },
@@ -431,7 +431,7 @@
           const projectTitle = project.projectName || project.title || 'Untitled Project';
           const projectDesc = project.projectDescription || project.description || 'No description available';
           const authorName = project.user ? (project.user.name || project.user.email || 'Anonymous') : 'Anonymous';
-          const projectImage = project.screenshotUrl ? `http://localhost:3000${project.screenshotUrl}` : null;
+          const projectImage = project.screenshotUrl ? `https://eduport-1.onrender.com${project.screenshotUrl}` : null;
 
           page.innerHTML = `
                         <div style="height: 100%; display: flex; flex-direction: column;">
@@ -484,7 +484,7 @@
       const projectDesc = project.projectDescription || project.description || 'No description available';
       const authorName = project.user ? (project.user.name || project.user.email || 'Anonymous') : 'Anonymous';
       const createdDate = new Date(project.createdAt).toLocaleDateString();
-      const projectImage = project.screenshotUrl ? `http://localhost:3000${project.screenshotUrl}` : null;
+      const projectImage = project.screenshotUrl ? `https://eduport-1.onrender.com${project.screenshotUrl}` : null;
 
       // Create modal overlay
       const modal = document.createElement('div');

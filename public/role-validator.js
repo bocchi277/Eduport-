@@ -80,7 +80,7 @@
     // Additional security: Validate token with backend
     async function validateTokenWithBackend() {
         try {
-            const response = await fetch('http://localhost:3000/api/users/me', {
+            const response = await fetch('https://eduport-1.onrender.com/api/users/me', {
                 headers: { 'x-auth-token': token }
             });
             
