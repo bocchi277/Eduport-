@@ -1,0 +1,1015 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Create Project — EduPort</title>
+    <meta name="description" content="EduPort — create a new project to showcase your work and build your portfolio." />
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎓</text></svg>">
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <style>
+        /* ========== DESIGN TOKENS — matches dashboard system ========== */
+        :root {
+            --bg: #050d0d;
+            --bg-card: rgba(10, 30, 30, .55);
+            --bg-hover: rgba(16, 42, 42, .7);
+            --surface: #0b1c1c;
+            --border: rgba(20, 184, 166, .12);
+            --border-hl: rgba(20, 184, 166, .30);
+            --txt: #e2e8f0;
+            --txt2: #94a3b8;
+            --txt3: #64748b;
+            --accent: #14b8a6;
+            --accent2: #0d9488;
+            --accent3: #2dd4bf;
+            --grad: linear-gradient(135deg, #0d9488 0%, #14b8a6 50%, #2dd4bf 100%);
+            --grad-warm: linear-gradient(135deg, #f59e0b, #ef4444);
+            --ok: #10b981;
+            --err: #ef4444;
+            --warn: #f59e0b;
+            --side-w: 250px;
+            --head-h: 64px;
+            --r-sm: 8px;
+            --r-md: 14px;
+            --r-lg: 20px;
+            --fast: .2s cubic-bezier(.4, 0, .2, 1);
+            --smooth: .35s cubic-bezier(.4, 0, .2, 1);
+        }
+
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box
+        }
+
+        html {
+            font-size: 16px;
+            scroll-behavior: smooth
+        }
+
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            background: var(--bg);
+            color: var(--txt);
+            min-height: 100vh;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: -25%;
+            right: -12%;
+            width: 650px;
+            height: 650px;
+            background: radial-gradient(circle, rgba(20, 184, 166, .07) 0%, transparent 70%);
+            pointer-events: none
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            bottom: -20%;
+            left: -8%;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(13, 148, 136, .05) 0%, transparent 70%);
+            pointer-events: none
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit
+        }
+
+        ul {
+            list-style: none
+        }
+
+        button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-family: inherit;
+            color: inherit
+        }
+
+        img {
+            display: block;
+            max-width: 100%
+        }
+
+        .shell {
+            display: flex;
+            min-height: 100vh;
+            position: relative;
+            z-index: 1
+        }
+
+        /* ========== SIDEBAR ========== */
+        .side {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: var(--side-w);
+            height: 100vh;
+            background: rgba(5, 13, 13, .92);
+            backdrop-filter: blur(24px);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            padding: 24px 14px 18px;
+            z-index: 100;
+            transition: transform var(--smooth)
+        }
+
+        .side-brand {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+            padding: 0 8px 22px;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 20px
+        }
+
+        .brand-ico {
+            width: 38px;
+            height: 38px;
+            border-radius: var(--r-md);
+            background: var(--grad);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            font-weight: 800;
+            color: #fff;
+            flex-shrink: 0;
+            box-shadow: 0 4px 14px rgba(20, 184, 166, .3)
+        }
+
+        .brand-txt {
+            font-size: 1.25rem;
+            font-weight: 800;
+            letter-spacing: -.4px;
+            background: var(--grad);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text
+        }
+
+        .side-nav {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 3px
+        }
+
+        .nav-lbl {
+            font-size: .66rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1.1px;
+            color: var(--txt3);
+            padding: 10px 12px 6px
+        }
+
+        .nav-a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 11px 13px;
+            border-radius: var(--r-md);
+            font-size: .88rem;
+            font-weight: 500;
+            color: var(--txt2);
+            transition: all var(--fast);
+            position: relative
+        }
+
+        .nav-a:hover {
+            color: var(--txt);
+            background: rgba(20, 184, 166, .08)
+        }
+
+        .nav-a.on {
+            color: #fff;
+            background: rgba(20, 184, 166, .14)
+        }
+
+        .nav-a.on::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 3px;
+            height: 22px;
+            border-radius: 0 4px 4px 0;
+            background: var(--grad)
+        }
+
+        .nav-a i {
+            width: 18px;
+            font-size: 1.05rem;
+            text-align: center;
+            flex-shrink: 0
+        }
+
+        .side-foot {
+            margin-top: auto;
+            padding-top: 16px;
+            border-top: 1px solid var(--border)
+        }
+
+        .side-usr {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px;
+            border-radius: var(--r-md);
+            transition: background var(--fast)
+        }
+
+        .side-usr:hover {
+            background: rgba(20, 184, 166, .08)
+        }
+
+        .side-ava {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--border-hl);
+            flex-shrink: 0
+        }
+
+        .side-uname {
+            font-size: .82rem;
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis
+        }
+
+        .side-urole {
+            font-size: .68rem;
+            color: var(--accent3);
+            font-weight: 500
+        }
+
+        /* ========== MAIN ========== */
+        .main {
+            flex: 1;
+            margin-left: var(--side-w);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            transition: margin-left var(--smooth)
+        }
+
+        .head {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            height: var(--head-h);
+            padding: 0 28px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(5, 13, 13, .78);
+            backdrop-filter: blur(18px);
+            border-bottom: 1px solid var(--border)
+        }
+
+        .head-l {
+            display: flex;
+            align-items: center;
+            gap: 14px
+        }
+
+        .mob-tog {
+            display: none;
+            width: 38px;
+            height: 38px;
+            align-items: center;
+            justify-content: center;
+            border-radius: var(--r-sm);
+            font-size: 1.15rem;
+            color: var(--txt2)
+        }
+
+        .head-title h1 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            letter-spacing: -.2px
+        }
+
+        .head-title span {
+            font-size: .76rem;
+            color: var(--txt3)
+        }
+
+        .head-r {
+            display: flex;
+            align-items: center;
+            gap: 10px
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            padding: 8px 16px;
+            border-radius: 50px;
+            font-size: .82rem;
+            font-weight: 600;
+            color: var(--txt2);
+            border: 1px solid var(--border);
+            transition: all var(--fast)
+        }
+
+        .back-btn:hover {
+            color: var(--txt);
+            border-color: var(--border-hl);
+            background: rgba(20, 184, 166, .08)
+        }
+
+        .page {
+            flex: 1;
+            padding: 24px 28px 48px;
+            max-width: 900px;
+            width: 100%;
+            margin: 0 auto
+        }
+
+        /* ========== FORM CARD ========== */
+        .sc {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--r-lg);
+            backdrop-filter: blur(10px);
+            overflow: hidden;
+            margin-bottom: 22px
+        }
+
+        .sc-h {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 18px 22px;
+            border-bottom: 1px solid var(--border)
+        }
+
+        .sc-h h2 {
+            font-size: 1rem;
+            font-weight: 700;
+            letter-spacing: -.2px;
+            display: flex;
+            align-items: center;
+            gap: 8px
+        }
+
+        .sc-h h2 i {
+            color: var(--accent)
+        }
+
+        .sc-b {
+            padding: 22px
+        }
+
+        .f-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 16px
+        }
+
+        .f-group {
+            margin-bottom: 16px
+        }
+
+        .f-group:last-child {
+            margin-bottom: 0
+        }
+
+        .f-group label {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: .82rem;
+            font-weight: 600;
+            color: var(--txt2);
+            margin-bottom: 7px
+        }
+
+        .f-group label i {
+            font-size: .85rem;
+            color: var(--accent)
+        }
+
+        .req {
+            color: var(--err)
+        }
+
+        .f-group input,
+        .f-group textarea,
+        .f-group select {
+            width: 100%;
+            padding: 11px 14px;
+            background: rgba(10, 30, 30, .5);
+            border: 1px solid var(--border);
+            border-radius: var(--r-md);
+            color: var(--txt);
+            font-family: inherit;
+            font-size: .85rem;
+            transition: border-color var(--fast)
+        }
+
+        .f-group input:focus,
+        .f-group textarea:focus,
+        .f-group select:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(20, 184, 166, .08)
+        }
+
+        .f-group input::placeholder,
+        .f-group textarea::placeholder {
+            color: var(--txt3)
+        }
+
+        .f-group textarea {
+            resize: vertical;
+            min-height: 120px
+        }
+
+        .f-group select {
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center
+        }
+
+        .f-group select option {
+            background: var(--surface);
+            color: var(--txt)
+        }
+
+        /* Image upload */
+        .img-drop {
+            border: 2px dashed var(--border);
+            border-radius: var(--r-md);
+            padding: 36px;
+            text-align: center;
+            cursor: pointer;
+            transition: all var(--fast)
+        }
+
+        .img-drop:hover {
+            border-color: var(--accent);
+            background: rgba(20, 184, 166, .04)
+        }
+
+        .img-drop.dragover {
+            border-color: var(--accent);
+            background: rgba(20, 184, 166, .06)
+        }
+
+        .img-drop i {
+            font-size: 2.2rem;
+            color: var(--accent);
+            margin-bottom: 10px;
+            display: block
+        }
+
+        .img-drop h3 {
+            font-size: .9rem;
+            font-weight: 600;
+            margin-bottom: 4px
+        }
+
+        .img-drop p {
+            font-size: .78rem;
+            color: var(--txt3)
+        }
+
+        .img-drop small {
+            font-size: .7rem;
+            color: var(--txt3)
+        }
+
+        .img-prev {
+            margin-top: 16px;
+            text-align: center
+        }
+
+        .img-prev img {
+            max-width: 360px;
+            max-height: 220px;
+            border-radius: var(--r-md);
+            border: 1px solid var(--border);
+            margin: 0 auto
+        }
+
+        .rm-img {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            margin-top: 10px;
+            padding: 7px 16px;
+            border-radius: 50px;
+            font-size: .78rem;
+            font-weight: 600;
+            color: #fff;
+            background: rgba(239, 68, 68, .8);
+            transition: all var(--fast)
+        }
+
+        .rm-img:hover {
+            background: var(--err);
+            transform: translateY(-1px)
+        }
+
+        /* Actions */
+        .form-acts {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            padding-top: 4px
+        }
+
+        .abtn {
+            padding: 10px 24px;
+            border-radius: 50px;
+            font-size: .85rem;
+            font-weight: 600;
+            transition: all var(--fast)
+        }
+
+        .abtn.sec {
+            color: var(--txt2);
+            border: 1px solid var(--border)
+        }
+
+        .abtn.sec:hover {
+            color: var(--txt);
+            border-color: var(--border-hl);
+            background: rgba(20, 184, 166, .08)
+        }
+
+        .abtn.pri {
+            background: var(--grad);
+            color: #fff
+        }
+
+        .abtn.pri:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 18px rgba(20, 184, 166, .3)
+        }
+
+        .abtn:disabled {
+            opacity: .5;
+            cursor: not-allowed;
+            transform: none !important;
+            box-shadow: none !important
+        }
+
+        /* Progress bar */
+        .prog-wrap {
+            margin-bottom: 18px
+        }
+
+        .prog-lbl {
+            display: flex;
+            justify-content: space-between;
+            font-size: .72rem;
+            color: var(--txt3);
+            margin-bottom: 6px
+        }
+
+        .prog-bar {
+            height: 4px;
+            background: rgba(20, 184, 166, .1);
+            border-radius: 50px;
+            overflow: hidden
+        }
+
+        .prog-fill {
+            height: 100%;
+            background: var(--grad);
+            border-radius: 50px;
+            width: 0%;
+            transition: width .4s ease
+        }
+
+        /* Notification */
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 12px 20px;
+            border-radius: var(--r-md);
+            color: #fff;
+            font-size: .82rem;
+            font-weight: 500;
+            transform: translateX(calc(100% + 40px));
+            transition: transform .4s cubic-bezier(.34, 1.56, .64, 1);
+            z-index: 9999;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, .4);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            backdrop-filter: blur(10px)
+        }
+
+        .toast.show {
+            transform: translateX(0)
+        }
+
+        .toast.success {
+            background: rgba(16, 185, 129, .9)
+        }
+
+        .toast.error {
+            background: rgba(239, 68, 68, .9)
+        }
+
+        .toast.info {
+            background: rgba(20, 184, 166, .9)
+        }
+
+        .ov {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, .5);
+            z-index: 99;
+            opacity: 0;
+            transition: opacity var(--smooth)
+        }
+
+        .ov.show {
+            display: block;
+            opacity: 1
+        }
+
+        .fu {
+            opacity: 0;
+            transform: translateY(18px);
+            animation: fu .55s ease forwards
+        }
+
+        @keyframes fu {
+            to {
+                opacity: 1;
+                transform: translateY(0)
+            }
+        }
+
+        .d1 {
+            animation-delay: .1s
+        }
+
+        .d2 {
+            animation-delay: .18s
+        }
+
+        .d3 {
+            animation-delay: .26s
+        }
+
+        .d4 {
+            animation-delay: .34s
+        }
+
+        @media(max-width:768px) {
+            .side {
+                transform: translateX(-100%)
+            }
+
+            .side.open {
+                transform: translateX(0)
+            }
+
+            .ov.show {
+                display: block;
+                opacity: 1
+            }
+
+            .main {
+                margin-left: 0
+            }
+
+            .mob-tog {
+                display: flex
+            }
+
+            .head {
+                padding: 0 14px
+            }
+
+            .page {
+                padding: 16px 14px 28px
+            }
+
+            .f-row {
+                grid-template-columns: 1fr
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="ov" id="ov"></div>
+    <div class="shell">
+        <!-- SIDEBAR -->
+        <aside class="side" id="side">
+            <div class="side-brand">
+                <div class="brand-ico">E</div><span class="brand-txt">EduPort</span>
+            </div>
+            <nav class="side-nav">
+                <span class="nav-lbl">Menu</span>
+                <a href="index.html" class="nav-a"><i class="fa-solid fa-house"></i><span>Home</span></a>
+                <a href="dashboard.html" class="nav-a"><i class="fa-solid fa-grip"></i><span>Dashboard</span></a>
+                <a href="create-project.html" class="nav-a on"><i class="fa-solid fa-plus"></i><span>Add
+                        Project</span></a>
+                <a href="projects.html" class="nav-a"><i class="fa-solid fa-rocket"></i><span>Explore</span></a>
+                <span class="nav-lbl" style="margin-top:14px">Account</span>
+                <a href="profile.html" class="nav-a"><i class="fa-solid fa-user"></i><span>Profile</span></a>
+            </nav>
+            <div class="side-foot">
+                <div class="side-usr">
+                    <img class="side-ava" id="s-ava"
+                        src="https://ui-avatars.com/api/?name=U&background=0d9488&color=fff&bold=true&size=80" alt="">
+                    <div>
+                        <div class="side-uname" id="s-name">User</div>
+                        <div class="side-urole" id="s-role">Student</div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- MAIN -->
+        <main class="main">
+            <header class="head">
+                <div class="head-l">
+                    <button class="mob-tog" id="mob-tog"><i class="fa-solid fa-bars"></i></button>
+                    <div class="head-title">
+                        <h1>Create New Project</h1><span>Showcase your work to the community</span>
+                    </div>
+                </div>
+                <div class="head-r">
+                    <a href="dashboard.html" class="back-btn"><i class="fa-solid fa-arrow-left"></i>Dashboard</a>
+                </div>
+            </header>
+
+            <div class="page">
+                <!-- Progress -->
+                <div class="prog-wrap fu d1">
+                    <div class="prog-lbl"><span>Form Completion</span><span id="prog-pct">0%</span></div>
+                    <div class="prog-bar">
+                        <div class="prog-fill" id="prog-fill"></div>
+                    </div>
+                </div>
+
+                <form id="project-form">
+                    <!-- Project Info -->
+                    <div class="sc fu d2">
+                        <div class="sc-h">
+                            <h2><i class="fa-solid fa-rocket"></i>Project Information</h2>
+                        </div>
+                        <div class="sc-b">
+                            <div class="f-group">
+                                <label for="project-name">Project Name <span class="req">*</span></label>
+                                <input type="text" id="project-name" name="projectName" required
+                                    placeholder="Enter your project name">
+                            </div>
+                            <div class="f-group">
+                                <label for="project-description">Project Description <span class="req">*</span></label>
+                                <textarea id="project-description" name="projectDescription" required
+                                    placeholder="Describe your project, its features, and what makes it unique"></textarea>
+                            </div>
+                            <div class="f-group">
+                                <label for="tech-used">Technology Category <span class="req">*</span></label>
+                                <select id="tech-used" name="techUsed" required>
+                                    <option value="">Select Technology Category</option>
+                                    <option value="web-development">Web Development</option>
+                                    <option value="android-development">Android Development</option>
+                                    <option value="ios-development">iOS Development</option>
+                                    <option value="ai-ml">AI/ML</option>
+                                    <option value="data-science">Data Science</option>
+                                    <option value="blockchain">Blockchain</option>
+                                    <option value="game-development">Game Development</option>
+                                    <option value="desktop-app">Desktop Application</option>
+                                    <option value="devops">DevOps</option>
+                                    <option value="cybersecurity">Cybersecurity</option>
+                                    <option value="iot">IoT (Internet of Things)</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+                            <div class="f-row">
+                                <div class="f-group">
+                                    <label for="project-url"><i class="fa-solid fa-link"></i>Project URL</label>
+                                    <input type="url" id="project-url" name="projectUrl"
+                                        placeholder="https://yourproject.com">
+                                </div>
+                                <div class="f-group">
+                                    <label for="github-url"><i class="fa-brands fa-github"></i>GitHub Repository</label>
+                                    <input type="url" id="github-url" name="githubUrl"
+                                        placeholder="https://github.com/username/repo">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Project Image -->
+                    <div class="sc fu d3">
+                        <div class="sc-h">
+                            <h2><i class="fa-solid fa-image"></i>Project Image <span class="req">*</span></h2>
+                        </div>
+                        <div class="sc-b">
+                            <input type="file" id="project-image" accept="image/*" required style="display:none">
+                            <div class="img-drop" id="upload-area">
+                                <i class="fa-solid fa-cloud-arrow-up"></i>
+                                <h3>Click to upload or drag and drop</h3>
+                                <p>PNG, JPG, GIF up to 5MB</p>
+                            </div>
+                            <div id="image-preview" class="img-prev" style="display:none">
+                                <img id="preview-image" src="" alt="Project Preview">
+                                <button type="button" id="remove-image" class="rm-img"><i
+                                        class="fa-solid fa-trash"></i>Remove Image</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="sc fu d4">
+                        <div class="sc-b">
+                            <div class="form-acts">
+                                <button type="button" class="abtn sec"
+                                    onclick="window.location.href='dashboard.html'"><i class="fa-solid fa-xmark"></i>
+                                    Cancel</button>
+                                <button type="submit" class="abtn pri" id="submit-btn" disabled><i
+                                        class="fa-solid fa-paper-plane"></i> Create Project</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        /* ================================================================
+           CREATE PROJECT JS — x-auth-token, API_URL
+        ================================================================ */
+        const API_URL = window.location.hostname === 'localhost'
+            ? 'http://localhost:5000'
+            : 'https://eduport-backend-6uib.onrender.com';
+
+        const token = localStorage.getItem('token');
+        if (!token) window.location.href = 'login.html';
+
+        // Sidebar user info
+        (async () => {
+            try {
+                const r = await fetch(`${API_URL}/api/users/me`, { headers: { 'x-auth-token': token } });
+                if (r.ok) {
+                    const u = await r.json();
+                    const name = u.name || 'User';
+                    const role = u.role || localStorage.getItem('userRole') || 'student';
+                    const ava = u.profilePictureUrl || `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=0d9488&color=fff&bold=true&size=80`;
+                    document.getElementById('s-name').textContent = name;
+                    document.getElementById('s-role').textContent = role.charAt(0).toUpperCase() + role.slice(1);
+                    document.getElementById('s-ava').src = ava;
+                }
+            } catch (e) { }
+        })();
+
+        // Mobile sidebar
+        const mt = document.getElementById('mob-tog'), side = document.getElementById('side'), ov = document.getElementById('ov');
+        if (mt && side && ov) { mt.onclick = () => { side.classList.toggle('open'); ov.classList.toggle('show') }; ov.onclick = () => { side.classList.remove('open'); ov.classList.remove('show') }; }
+
+        // Form elements
+        const form = document.getElementById('project-form');
+        const fileInput = document.getElementById('project-image');
+        const uploadArea = document.getElementById('upload-area');
+        const imagePreview = document.getElementById('image-preview');
+        const previewImage = document.getElementById('preview-image');
+        const removeImageBtn = document.getElementById('remove-image');
+        const submitBtn = document.getElementById('submit-btn');
+
+        // Progress bar
+        function updateProgress() {
+            const fields = [
+                document.getElementById('project-name').value.trim(),
+                document.getElementById('project-description').value.trim(),
+                document.getElementById('tech-used').value,
+                fileInput.files.length > 0 ? 'yes' : ''
+            ];
+            const filled = fields.filter(Boolean).length;
+            const pct = Math.round((filled / fields.length) * 100);
+            document.getElementById('prog-pct').textContent = pct + '%';
+            document.getElementById('prog-fill').style.width = pct + '%';
+        }
+
+        // Form validation
+        function validateForm() {
+            const projectName = document.getElementById('project-name').value.trim();
+            const projectDescription = document.getElementById('project-description').value.trim();
+            const techUsed = document.getElementById('tech-used').value;
+            const hasImage = fileInput.files.length > 0;
+            submitBtn.disabled = !(projectName && projectDescription && techUsed && hasImage);
+            updateProgress();
+        }
+
+        ['project-name', 'project-description', 'tech-used'].forEach(id => {
+            document.getElementById(id).addEventListener('input', validateForm);
+        });
+
+        // File upload handling
+        uploadArea.addEventListener('click', () => fileInput.click());
+        uploadArea.addEventListener('dragover', e => { e.preventDefault(); uploadArea.classList.add('dragover'); });
+        uploadArea.addEventListener('dragleave', () => uploadArea.classList.remove('dragover'));
+        uploadArea.addEventListener('drop', e => {
+            e.preventDefault(); uploadArea.classList.remove('dragover');
+            if (e.dataTransfer.files.length > 0) handleFileSelect(e.dataTransfer.files[0]);
+        });
+        fileInput.addEventListener('change', e => { if (e.target.files.length > 0) handleFileSelect(e.target.files[0]); });
+
+        function handleFileSelect(file) {
+            if (file.size > 5 * 1024 * 1024) { showN('File size must be less than 5MB', 'error'); return; }
+            if (!file.type.startsWith('image/')) { showN('Please select an image file', 'error'); return; }
+            const reader = new FileReader();
+            reader.onload = e => { previewImage.src = e.target.result; imagePreview.style.display = 'block'; uploadArea.style.display = 'none'; validateForm(); };
+            reader.readAsDataURL(file);
+        }
+
+        removeImageBtn.addEventListener('click', () => {
+            fileInput.value = ''; imagePreview.style.display = 'none'; uploadArea.style.display = 'block'; validateForm();
+        });
+
+        // Form submission — FIXED: uses x-auth-token and localhost:5000
+        form.addEventListener('submit', async e => {
+            e.preventDefault();
+            if (submitBtn.disabled) return;
+
+            submitBtn.disabled = true;
+            const origText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Creating…';
+
+            try {
+                const formData = new FormData();
+                formData.append('projectName', document.getElementById('project-name').value.trim());
+                formData.append('projectDescription', document.getElementById('project-description').value.trim());
+                formData.append('techUsed', document.getElementById('tech-used').value);
+                formData.append('projectUrl', document.getElementById('project-url').value.trim());
+                formData.append('githubUrl', document.getElementById('github-url').value.trim());
+                formData.append('projectImage', fileInput.files[0]);
+
+                const response = await fetch(`${API_URL}/api/projects`, {
+                    method: 'POST',
+                    headers: { 'x-auth-token': token },
+                    body: formData
+                });
+
+                if (response.ok) {
+                    showN('Project created successfully!', 'success');
+                    setTimeout(() => { window.location.href = 'dashboard.html'; }, 1500);
+                } else {
+                    const err = await response.json();
+                    showN(err.message || 'Failed to create project', 'error');
+                }
+            } catch (error) {
+                console.error('Error creating project:', error);
+                showN('Failed to create project. Please try again.', 'error');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = origText;
+                validateForm();
+            }
+        });
+
+        function showN(msg, type = 'info') {
+            const t = document.createElement('div'); t.className = `toast ${type}`;
+            const icons = { success: 'fa-check-circle', error: 'fa-circle-exclamation', info: 'fa-circle-info' };
+            t.innerHTML = `<i class="fa-solid ${icons[type] || icons.info}"></i>${msg}`;
+            document.body.appendChild(t); requestAnimationFrame(() => t.classList.add('show'));
+            setTimeout(() => { t.classList.remove('show'); setTimeout(() => { if (document.body.contains(t)) document.body.removeChild(t); }, 400); }, 3000);
+        }
+
+        validateForm();
+    </script>
+</body>
+
+</html>

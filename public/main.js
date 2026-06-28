@@ -1,0 +1,206 @@
+// Smart API URL: auto-switches between local dev and production
+const API_URL = window.location.hostname === 'localhost'
+    ? 'http://localhost:5000'
+    : 'https://eduport-backend-6uib.onrender.com';
+
+// Wait for the entire HTML document to be fully loaded and parsed
+document.addEventListener('DOMContentLoaded', function () {
+
+    /**
+     * A helper function to create and display notifications on the screen.
+     * @param {string} message - The message to display.
+     * @param {string} type - The type of notification ('success', 'error', 'info').
+     */
+    function showNotification(message, type = 'info') {
+        // Create the notification element
+        const notification = document.createElement('div');
+        notification.className = `notification ${type}`;
+        notification.textContent = message;
+
+        // Append to the body
+        document.body.appendChild(notification);
+
+        // Add 'show' class to trigger CSS transition for fade-in
+        setTimeout(() => {
+            notification.classList.add('show');
+        }, 10);
+
+        // After 3 seconds, remove the 'show' class to fade out
+        setTimeout(() => {
+            notification.classList.remove('show');
+            // Remove the element from the DOM after the fade-out transition completes
+            setTimeout(() => {
+                if (document.body.contains(notification)) {
+                    document.body.removeChild(notification);
+                }
+            }, 300);
+        }, 3000);
+    }
+
+    // --- Toggle password visibility ---
+    const togglePassword = document.querySelector('.toggle-password');
+    const passwordInput = document.querySelector('#password');
+    if (togglePassword && passwordInput) {
+        togglePassword.addEventListener('click', function () {
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+            // Toggle the eye icon class
+            this.querySelector('i').classList.toggle('fa-eye');
+            this.querySelector('i').classList.toggle('fa-eye-slash');
+        });
+    }
+
+    // --- Form submission for Email/Password Login ---
+    const loginForm = document.getElementById('login-form');
+    if (loginForm) {
+        loginForm.addEventListener('submit', async function (e) {
+            // CRITICAL: Prevents the browser's default form submission
+            e.preventDefault();
+
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const selectedRole = sessionStorage.getItem('selectedRole') || 'student';
+            const loginBtn = this.querySelector('button[type="submit"]');
+            const buttonInner = loginBtn.querySelector('span');
+
+            // Provide visual feedback that something is happening
+            if (buttonInner) buttonInner.textContent = 'Signing In...';
+            loginBtn.disabled = true;
+
+            try {
+                // Send the data to the backend's POST /login route
+                const response = await fetch(`${API_URL}/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        email,
+                        password,
+                        role: selectedRole
+                    }),
+                });
+
+                // Get the response from the server as JSON
+                const data = await response.json();
+
+                if (response.ok) {
+                    console.log('Login response data:', data); // Debug log
+                    showNotification(data.message || 'Login successful!', 'success');
+
+                    // Save the token and role from backend response
+                    localStorage.setItem('token', data.token);
+                    localStorage.setItem('userRole', data.role); // Use backend role, not selected role
+
+                    console.log('Backend returned role:', data.role); // Debug log
+                    console.log('Selected role was:', selectedRole); // Debug log
+                    console.log('Final role stored:', data.role); // Debug log
+                    console.log('Redirecting to:', data.redirectTo); // Debug log
+
+                    // Clear the selected role from session storage
+                    sessionStorage.removeItem('selectedRole');
+
+                    // CRITICAL FIX: Redirect to role-specific dashboard
+                    setTimeout(() => {
+                        if (data.redirectTo) {
+                            window.location.href = data.redirectTo;
+                        } else {
+                            // Fallback redirect based on role
+                            const dashboardUrl = data.role === 'teacher' ? 'teacher-dashboard.html' : 'student-dashboard.html';
+                            window.location.href = dashboardUrl;
+                        }
+                    }, 1000); // 1 second delay to allow user to see success message
+
+                } else {
+                    // This means the server responded with a 4xx or 5xx error
+                    showNotification(`Error: ${data.message}`, 'error');
+                }
+            } catch (error) {
+                // This catches network errors or if the server is down
+                console.error('Failed to connect to the server:', error);
+                showNotification('Could not connect to the server.', 'error');
+            } finally {
+                // This block runs whether the request succeeded or failed
+                // Reset the button to its original state (unless redirecting)
+                if (!localStorage.getItem('token')) {
+                    if (buttonInner) buttonInner.textContent = 'Sign In';
+                    loginBtn.disabled = false;
+                }
+            }
+        });
+    }
+
+    // --- Social Login Button Handlers ---
+    const googleBtn = document.querySelector('.social-btn.google');
+    if (googleBtn) {
+        googleBtn.addEventListener('click', () => {
+            // Redirect the user to the backend's Google auth route
+            window.location.href = `${API_URL}/auth/google`;
+        });
+    }
+
+    const facebookBtn = document.querySelector('.social-btn.facebook');
+    if (facebookBtn) {
+        facebookBtn.addEventListener('click', () => {
+            showNotification('Facebook login not yet implemented.', 'info');
+        });
+    }
+
+    const twitterBtn = document.querySelector('.social-btn.twitter');
+    if (twitterBtn) {
+        twitterBtn.addEventListener('click', () => {
+            showNotification('Twitter login not yet implemented.', 'info');
+        });
+    }
+});
+
+
+// Add styles for notification
+const style = document.createElement('style');
+style.textContent = `
+    .notification {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 15px 25px;
+        border-radius: 8px;
+        color: white;
+        font-weight: 500;
+        transform: translateX(150%);
+        transition: transform 0.3s ease;
+        z-index: 1000;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+    
+    .notification.show {
+        transform: translateX(0);
+    }
+    
+    .notification.success {
+        background-color: #2ecc71;
+    }
+    
+    .notification.error {
+        background-color: #e74c3c;
+    }
+    
+    .notification.info {
+        background-color: #3498db;
+    }
+    
+    .spinner {
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        border: 3px solid rgba(255,255,255,0.3);
+        border-radius: 50%;
+        border-top-color: #fff;
+        animation: spin 1s ease-in-out infinite;
+    }
+    
+    @keyframes spin {
+        to { transform: rotate(360deg); }
+    }
+`;
+
+document.head.appendChild(style);

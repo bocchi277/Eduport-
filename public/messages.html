@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Messages — EduPort</title>
+    <meta name="description" content="View and manage your messages on EduPort." />
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎓</text></svg>">
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <style>
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            background: #080f0f;
+            color: #e2e8f0;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .side {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 250px;
+            height: 100vh;
+            background: rgba(5, 13, 13, .92);
+            backdrop-filter: blur(24px);
+            border-right: 1px solid rgba(20, 184, 166, .12);
+            display: flex;
+            flex-direction: column;
+            padding: 24px 14px 18px;
+            z-index: 300;
+            transition: transform .35s cubic-bezier(.4, 0, .2, 1)
+        }
+
+        .side-brand {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+            padding: 0 8px 22px;
+            border-bottom: 1px solid rgba(20, 184, 166, .12);
+            margin-bottom: 20px
+        }
+
+        .brand-ico {
+            width: 38px;
+            height: 38px;
+            border-radius: 14px;
+            background: linear-gradient(135deg, #0d9488 0%, #14b8a6 50%, #2dd4bf 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            font-weight: 800;
+            color: #fff;
+            flex-shrink: 0;
+            box-shadow: 0 4px 14px rgba(20, 184, 166, .3)
+        }
+
+        .brand-txt {
+            font-size: 1.25rem;
+            font-weight: 800;
+            letter-spacing: -.4px;
+            background: linear-gradient(135deg, #0d9488, #14b8a6, #2dd4bf);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text
+        }
+
+        .side-nav {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 3px
+        }
+
+        .nav-lbl {
+            font-size: .66rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1.1px;
+            color: #64748b;
+            padding: 10px 12px 6px
+        }
+
+        .nav-a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 11px 13px;
+            border-radius: 14px;
+            font-size: .88rem;
+            font-weight: 500;
+            color: #94a3b8;
+            transition: all .2s;
+            position: relative;
+            text-decoration: none
+        }
+
+        .nav-a:hover {
+            color: #e2e8f0;
+            background: rgba(20, 184, 166, .08)
+        }
+
+        .nav-a.on {
+            color: #fff;
+            background: rgba(20, 184, 166, .14)
+        }
+
+        .nav-a.on::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 3px;
+            height: 22px;
+            border-radius: 0 4px 4px 0;
+            background: linear-gradient(135deg, #0d9488, #14b8a6, #2dd4bf)
+        }
+
+        .nav-a i {
+            width: 18px;
+            font-size: 1.05rem;
+            text-align: center;
+            flex-shrink: 0
+        }
+
+        .side-foot {
+            margin-top: auto;
+            padding-top: 16px;
+            border-top: 1px solid rgba(20, 184, 166, .12)
+        }
+
+        .side-usr {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px;
+            border-radius: 14px;
+            transition: background .2s
+        }
+
+        .side-usr:hover {
+            background: rgba(20, 184, 166, .08)
+        }
+
+        .side-ava {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid rgba(20, 184, 166, .30);
+            flex-shrink: 0
+        }
+
+        .side-uname {
+            font-size: .82rem;
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            color: #e2e8f0
+        }
+
+        .side-urole {
+            font-size: .68rem;
+            color: #2dd4bf;
+            font-weight: 500
+        }
+
+        /* Bell */
+        .bell-wrap {
+            position: relative;
+            display: inline-flex
+        }
+
+        .bell-btn {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 11px 13px;
+            border-radius: 14px;
+            font-size: .88rem;
+            font-weight: 500;
+            color: #94a3b8;
+            transition: all .2s;
+            cursor: pointer;
+            background: none;
+            border: none;
+            width: 100%;
+            text-align: left;
+            font-family: inherit
+        }
+
+        .bell-btn:hover {
+            color: #e2e8f0;
+            background: rgba(20, 184, 166, .08)
+        }
+
+        .bell-btn i {
+            width: 18px;
+            font-size: 1.05rem;
+            text-align: center;
+            flex-shrink: 0
+        }
+
+        .bell-badge {
+            position: absolute;
+            top: 6px;
+            left: 24px;
+            min-width: 17px;
+            height: 17px;
+            border-radius: 50%;
+            background: #ef4444;
+            color: #fff;
+            font-size: .6rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            pointer-events: none;
+            line-height: 1;
+            padding: 0 3px
+        }
+
+        .bell-badge.pulse {
+            animation: bellPulse 1.5s ease-in-out infinite
+        }
+
+        @keyframes bellPulse {
+
+            0%,
+            100% {
+                box-shadow: 0 0 0 0 rgba(239, 68, 68, .5)
+            }
+
+            50% {
+                box-shadow: 0 0 0 6px rgba(239, 68, 68, 0)
+            }
+        }
+
+        .bell-badge:empty,
+        .bell-badge[data-count='0'] {
+            display: none
+        }
+
+        /* Mobile */
+        .mob-tog {
+            display: none;
+            position: fixed;
+            top: 14px;
+            left: 14px;
+            z-index: 400;
+            width: 42px;
+            height: 42px;
+            border-radius: 8px;
+            background: rgba(5, 13, 13, .85);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(20, 184, 166, .12);
+            align-items: center;
+            justify-content: center;
+            font-size: 1.15rem;
+            color: #94a3b8;
+            cursor: pointer
+        }
+
+        .ov {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, .5);
+            z-index: 250;
+            opacity: 0;
+            transition: opacity .35s
+        }
+
+        .ov.show {
+            display: block;
+            opacity: 1
+        }
+
+        /* Main content area */
+        .main {
+            margin-left: 250px;
+            padding: 32px;
+            min-height: 100vh;
+        }
+
+        .page-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 28px;
+        }
+
+        .page-head h1 {
+            font-size: 1.6rem;
+            font-weight: 700;
+            letter-spacing: -.5px;
+        }
+
+        .page-head h1 i {
+            color: #14b8a6;
+            margin-right: 8px;
+        }
+
+        .msg-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .msg-card {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            background: rgba(20, 184, 166, .04);
+            border: 1px solid rgba(20, 184, 166, .08);
+            border-radius: 16px;
+            padding: 18px 20px;
+            transition: all .2s;
+            cursor: default;
+            position: relative;
+        }
+
+        .msg-card:hover {
+            background: rgba(20, 184, 166, .08);
+            border-color: rgba(20, 184, 166, .15);
+        }
+
+        .msg-card.unread {
+            border-left: 3px solid #14b8a6;
+        }
+
+        .msg-card.unread::after {
+            content: '';
+            position: absolute;
+            top: 20px;
+            right: 18px;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #14b8a6;
+            box-shadow: 0 0 8px rgba(20, 184, 166, .5);
+        }
+
+        .msg-ava {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid rgba(20, 184, 166, .2);
+            flex-shrink: 0;
+        }
+
+        .msg-body {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .msg-top {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 4px;
+        }
+
+        .msg-name {
+            font-size: .88rem;
+            font-weight: 600;
+            color: #e2e8f0;
+        }
+
+        .msg-role-tag {
+            font-size: .6rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: .8px;
+            padding: 2px 8px;
+            border-radius: 20px;
+            background: rgba(20, 184, 166, .12);
+            color: #2dd4bf;
+        }
+
+        .msg-time {
+            font-size: .7rem;
+            color: #64748b;
+            margin-left: auto;
+        }
+
+        .msg-text {
+            font-size: .84rem;
+            color: #94a3b8;
+            line-height: 1.5;
+        }
+
+        .msg-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .msg-mark-btn {
+            border: none;
+            background: rgba(20, 184, 166, .1);
+            color: #14b8a6;
+            padding: 5px 14px;
+            border-radius: 20px;
+            font-size: .72rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all .2s;
+            font-family: inherit;
+        }
+
+        .msg-mark-btn:hover {
+            background: rgba(20, 184, 166, .2);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #64748b;
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 16px;
+            display: block;
+            color: #334155;
+        }
+
+        .empty-state h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #94a3b8;
+            margin-bottom: 6px;
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 12px 20px;
+            border-radius: 14px;
+            color: #fff;
+            font-size: .82rem;
+            font-weight: 500;
+            transform: translateX(calc(100% + 40px));
+            transition: transform .4s cubic-bezier(.34, 1.56, .64, 1);
+            z-index: 9999;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, .4);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            backdrop-filter: blur(10px)
+        }
+
+        .toast.show {
+            transform: translateX(0)
+        }
+
+        .toast.success {
+            background: rgba(16, 185, 129, .9)
+        }
+
+        .toast.error {
+            background: rgba(239, 68, 68, .9)
+        }
+
+        .toast.info {
+            background: rgba(20, 184, 166, .9)
+        }
+
+        @media(max-width:768px) {
+            .side {
+                transform: translateX(-100%)
+            }
+
+            .side.open {
+                transform: translateX(0)
+            }
+
+            .main {
+                margin-left: 0;
+                padding: 16px;
+                padding-top: 60px
+            }
+
+            .mob-tog {
+                display: flex
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="ov" id="ov"></div>
+    <button class="mob-tog" id="mob-tog"><i class="fa-solid fa-bars"></i></button>
+
+    <aside class="side" id="side">
+        <div class="side-brand">
+            <div class="brand-ico">E</div><span class="brand-txt">EduPort</span>
+        </div>
+        <nav class="side-nav">
+            <span class="nav-lbl">Menu</span>
+            <a href="index.html" class="nav-a"><i class="fa-solid fa-house"></i><span>Home</span></a>
+            <a href="dashboard.html" class="nav-a"><i class="fa-solid fa-grip"></i><span>Dashboard</span></a>
+            <a href="create-project.html" class="nav-a" id="nav-create"><i class="fa-solid fa-plus"></i><span>Add
+                    Project</span></a>
+            <a href="projects.html" class="nav-a"><i class="fa-solid fa-rocket"></i><span>Explore</span></a>
+            <span class="nav-lbl" style="margin-top:14px">Account</span>
+            <a href="profile.html" class="nav-a"><i class="fa-solid fa-user"></i><span>Profile</span></a>
+            <a href="messages.html" class="nav-a on"><i class="fa-solid fa-envelope"></i><span>Messages</span></a>
+        </nav>
+        <div class="side-foot">
+            <div class="side-usr">
+                <img class="side-ava" id="s-ava"
+                    src="https://ui-avatars.com/api/?name=U&background=0d9488&color=fff&bold=true&size=80" alt="">
+                <div>
+                    <div class="side-uname" id="s-name">User</div>
+                    <div class="side-urole" id="s-role">Student</div>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <div class="main">
+        <div class="page-head">
+            <h1><i class="fa-solid fa-envelope"></i> Messages</h1>
+        </div>
+        <div class="msg-list" id="msg-list">
+            <div class="empty-state"><i class="fa-solid fa-inbox"></i>
+                <h3>Loading messages...</h3>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Smart API URL: auto-switches between local dev and production
+        const API_URL = window.location.hostname === 'localhost'
+            ? 'http://localhost:5000'
+            : 'https://eduport-backend-6uib.onrender.com';
+
+        // Mobile sidebar
+        const mobTog = document.getElementById('mob-tog'), side = document.getElementById('side'), ov = document.getElementById('ov');
+        if (mobTog && side && ov) {
+            mobTog.onclick = () => { side.classList.toggle('open'); ov.classList.toggle('show') };
+            ov.onclick = () => { side.classList.remove('open'); ov.classList.remove('show') };
+        }
+
+        // Role-aware sidebar
+        (function () {
+            const role = localStorage.getItem('userRole') || 'student';
+            document.getElementById('s-role').textContent = role.charAt(0).toUpperCase() + role.slice(1);
+            if (role === 'teacher') { const el = document.getElementById('nav-create'); if (el) el.style.display = 'none'; }
+        })();
+
+        // Load user profile for sidebar
+        async function loadUserProfile() {
+            try {
+                const token = localStorage.getItem('token');
+                if (!token) { window.location.href = 'login.html'; return; }
+                const resp = await fetch(`${API_URL}/api/users/me`, { headers: { 'x-auth-token': token } });
+                if (resp.ok) {
+                    const user = await resp.json();
+                    const name = user.name || user.email || 'User';
+                    const role = user.role || 'student';
+                    document.getElementById('s-name').textContent = name;
+                    document.getElementById('s-role').textContent = role.charAt(0).toUpperCase() + role.slice(1);
+                    const ava = user.profilePictureUrl
+                        ? (user.profilePictureUrl.startsWith('http') ? user.profilePictureUrl : `${API_URL}${user.profilePictureUrl}`)
+                        : `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=0d9488&color=fff&bold=true&size=80`;
+                    document.getElementById('s-ava').src = ava;
+                    localStorage.setItem('userRole', role);
+                    return user;
+                } else if (resp.status === 401) {
+                    localStorage.removeItem('token');
+                    window.location.href = 'login.html';
+                }
+            } catch (e) { console.error('Profile error:', e); }
+        }
+
+        function timeAgo(dateStr) {
+            const s = Math.floor((Date.now() - new Date(dateStr).getTime()) / 1000);
+            if (s < 60) return 'Just now';
+            if (s < 3600) return Math.floor(s / 60) + 'm ago';
+            if (s < 86400) return Math.floor(s / 3600) + 'h ago';
+            return Math.floor(s / 86400) + 'd ago';
+        }
+
+        function showToast(msg, type = 'info') {
+            const t = document.createElement('div');
+            t.className = `toast ${type}`;
+            t.innerHTML = `<i class="fa-solid ${type === 'success' ? 'fa-check-circle' : type === 'error' ? 'fa-exclamation-circle' : 'fa-info-circle'}"></i> ${msg}`;
+            document.body.appendChild(t);
+            requestAnimationFrame(() => t.classList.add('show'));
+            setTimeout(() => { t.classList.remove('show'); setTimeout(() => t.remove(), 400); }, 3000);
+        }
+
+        // Mark message as read
+        async function markRead(messageId, cardEl) {
+            try {
+                const token = localStorage.getItem('token');
+                const resp = await fetch(`${API_URL}/api/messages/${messageId}/read`, {
+                    method: 'PUT',
+                    headers: { 'x-auth-token': token }
+                });
+                if (resp.ok) {
+                    cardEl.classList.remove('unread');
+                    const btn = cardEl.querySelector('.msg-mark-btn');
+                    if (btn) btn.remove();
+                    showToast('Marked as read', 'success');
+                }
+            } catch (e) {
+                showToast('Failed to mark as read', 'error');
+            }
+        }
+
+        // Load all messages
+        async function loadMessages(currentUser) {
+            const token = localStorage.getItem('token');
+            if (!token) return;
+            try {
+                const resp = await fetch(`${API_URL}/api/messages`, { headers: { 'x-auth-token': token } });
+                if (!resp.ok) { throw new Error('Failed to fetch'); }
+                const messages = await resp.json();
+                const list = document.getElementById('msg-list');
+
+                if (messages.length === 0) {
+                    list.innerHTML = `<div class="empty-state">
+            <i class="fa-solid fa-inbox"></i>
+            <h3>No messages yet</h3>
+            <p style="color:#64748b;font-size:.82rem;">Messages from teachers will appear here.</p>
+          </div>`;
+                    return;
+                }
+
+                const currentUserId = currentUser ? currentUser._id : '';
+
+                list.innerHTML = messages.map(m => {
+                    const isIncoming = m.to && (m.to._id === currentUserId);
+                    const otherUser = isIncoming ? m.from : m.to;
+                    const otherName = otherUser ? (otherUser.name || otherUser.email || 'Unknown') : 'Unknown';
+                    const otherRole = otherUser ? (otherUser.role || '') : '';
+                    const otherAva = otherUser && otherUser.profilePictureUrl
+                        ? (otherUser.profilePictureUrl.startsWith('http') ? otherUser.profilePictureUrl : `${API_URL}${otherUser.profilePictureUrl}`)
+                        : `https://ui-avatars.com/api/?name=${encodeURIComponent(otherName)}&background=0d9488&color=fff&size=80`;
+                    const ago = timeAgo(m.createdAt);
+                    const unread = isIncoming && !m.read;
+
+                    return `<div class="msg-card ${unread ? 'unread' : ''}" data-id="${m._id}">
+            <img class="msg-ava" src="${otherAva}" alt="">
+            <div class="msg-body">
+              <div class="msg-top">
+                <span class="msg-name">${otherName}</span>
+                ${otherRole ? `<span class="msg-role-tag">${otherRole}</span>` : ''}
+                <span class="msg-time">${ago}</span>
+              </div>
+              <div class="msg-text">${isIncoming ? '' : '<span style="color:#64748b;font-size:.72rem;">You: </span>'}${m.text}</div>
+              ${unread ? `<div class="msg-actions"><button class="msg-mark-btn" onclick="markRead('${m._id}', this.closest('.msg-card'))"><i class="fa-solid fa-check"></i> Mark as Read</button></div>` : ''}
+            </div>
+          </div>`;
+                }).join('');
+
+            } catch (e) {
+                console.error('Load messages error:', e);
+                document.getElementById('msg-list').innerHTML = `<div class="empty-state">
+          <i class="fa-solid fa-exclamation-triangle"></i>
+          <h3>Failed to load messages</h3>
+        </div>`;
+            }
+        }
+
+        // Init
+        window.addEventListener('load', async () => {
+            const user = await loadUserProfile();
+            await loadMessages(user);
+        });
+    </script>
+</body>
+
+</html>
