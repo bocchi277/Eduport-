@@ -124,10 +124,12 @@ router.delete('/:id', auth, async (req, res) => {
       return res.status(401).json({ message: 'User not authorized' });
     }
 
-    // Delete the image file from the server
-    const imagePath = path.join(__dirname, project.screenshotUrl);
-    if (fs.existsSync(imagePath)) {
-      fs.unlinkSync(imagePath);
+    // Delete the image file from the server if it exists
+    if (project.screenshotUrl) {
+      const imagePath = path.join(__dirname, project.screenshotUrl);
+      if (fs.existsSync(imagePath)) {
+        fs.unlinkSync(imagePath);
+      }
     }
 
     // FIX: Replaced deprecated .remove() with the modern .deleteOne()
@@ -222,69 +224,99 @@ router.put('/:id/downvote', auth, async (req, res) => {
 
 // --- Comment Routes ---
 
-// @route   POST api/projects/:id/comment
-// @desc    Add a comment to a project
-// @access  Private
-router.post('/:id/comment', auth, async (req, res) => {
-  const { text } = req.body;
-  if (!text) {
-    return res.status(400).json({ message: 'Comment text is required.' });
-  }
+// Add comment to a project (Teachers only)
+router.post('/:id/comments', auth, async (req, res) => {
+    try {
+        console.log('Comment route hit:', req.params.id);
+        console.log('Request body:', req.body);
+        console.log('User ID:', req.user.id);
 
-  try {
-    const user = await User.findById(req.user.id).select('-password');
-    const project = await Project.findById(req.params.id);
+        const { text } = req.body;
 
-    if (!project) {
-      return res.status(404).json({ message: 'Project not found.' });
+        // Validate comment text first
+        if (!text || typeof text !== 'string' || text.trim().length === 0) {
+            console.log('Invalid text provided:', text);
+            return res.status(400).json({ message: 'Comment text is required' });
+        }
+
+        if (text.trim().length > 1000) {
+            return res.status(400).json({ message: 'Comment must be less than 1000 characters' });
+        }
+
+        // Check if user exists and is a teacher
+        const user = await User.findById(req.user.id).select('-password');
+        if (!user) {
+            console.log('User not found:', req.user.id);
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        if (user.role !== 'teacher') {
+            console.log('User is not a teacher:', user.role);
+            return res.status(403).json({ message: 'Only teachers can add comments' });
+        }
+
+        // Find the project
+        const project = await Project.findById(req.params.id);
+        if (!project) {
+            console.log('Project not found:', req.params.id);
+            return res.status(404).json({ message: 'Project not found' });
+        }
+
+        console.log('Project found:', project.projectName);
+
+        // Create new comment
+        const newComment = {
+            user: req.user.id,
+            text: text.trim(),
+            createdAt: new Date()
+        };
+
+        // Add comment to project
+        if (!project.comments) {
+            project.comments = [];
+        }
+
+        project.comments.push(newComment);
+
+        // Save the project
+        const savedProject = await project.save();
+        console.log('Project saved with comment');
+
+        // Return success response
+        res.status(201).json({
+            success: true,
+            message: 'Comment added successfully',
+            comment: newComment,
+            commentCount: savedProject.comments.length
+        });
+
+    } catch (err) {
+        console.error('Add comment error:', err);
+        res.status(500).json({
+            message: 'Server Error',
+            error: err.message,
+            stack: process.env.NODE_ENV === 'development' ? err.stack : undefined
+        });
     }
-
-    const newComment = {
-      user: req.user.id,
-      text: text,
-      name: user.name,
-      // FIX: Corrected 'avatar' to 'profilePictureUrl' to match the User model
-      avatar: user.profilePictureUrl
-    };
-
-    project.comments.unshift(newComment);
-    await project.save();
-
-    res.json(project.comments);
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send('Server Error');
-  }
 });
 
-// @route   DELETE api/projects/:id/comment/:comment_id
-// @desc    Delete a comment from a project
-// @access  Private
-router.delete('/:id/comment/:comment_id', auth, async (req, res) => {
-  try {
-    const project = await Project.findById(req.params.id);
-    const comment = project.comments.find(
-      comment => comment.id === req.params.comment_id
-    );
+// Get comments for a project
+router.get('/:projectId/comments', auth, async (req, res) => {
+    try {
+        const project = await Project.findById(req.params.projectId)
+            .populate('comments.user', 'name email')
+            .select('comments');
 
-    if (!comment) {
-      return res.status(404).json({ message: 'Comment not found.' });
+        if (!project) {
+            return res.status(404).json({ message: 'Project not found' });
+        }
+
+        res.json(project.comments);
+    } catch (err) {
+        console.error('Get comments error:', err.message);
+        res.status(500).json({ message: 'Server Error' });
     }
-
-    if (comment.user.toString() !== req.user.id) {
-      return res.status(401).json({ message: 'User not authorized.' });
-    }
-
-    project.comments = project.comments.filter(
-      ({ id }) => id.toString() !== req.params.comment_id
-    );
-
-    await project.save();
-    res.json(project.comments);
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send('Server Error');
-  }
 });
+
 
 module.exports = router;
