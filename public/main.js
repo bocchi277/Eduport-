@@ -1,8 +1,3 @@
-// Smart API URL: auto-switches between local dev and production
-const API_URL = window.location.hostname === 'localhost'
-    ? 'http://localhost:5000'
-    : 'https://eduport-backend-6uib.onrender.com';
-
 // Wait for the entire HTML document to be fully loaded and parsed
 document.addEventListener('DOMContentLoaded', function () {
 
@@ -69,7 +64,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             try {
                 // Send the data to the backend's POST /login route
-                const response = await fetch(`${API_URL}/login`, {
+                const response = await fetch('http://localhost:3000/login', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -135,7 +130,7 @@ document.addEventListener('DOMContentLoaded', function () {
     if (googleBtn) {
         googleBtn.addEventListener('click', () => {
             // Redirect the user to the backend's Google auth route
-            window.location.href = `${API_URL}/auth/google`;
+            window.location.href = 'http://localhost:3000/auth/google';
         });
     }
 

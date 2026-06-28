@@ -1,291 +1,401 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Student Dashboard — EduPort</title>
-  <meta name="description"
-    content="EduPort Student Dashboard — discover projects, explore the community, and build your portfolio." />
-  <link rel="icon"
-    href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎓</text></svg>">
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
-    rel="stylesheet" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
-  <link rel="stylesheet" href="global.css" />
-  <link rel="stylesheet" href="student-dashboard.css" />
-  <style>
-  </style>
-</head>
-
-<body>
-  <div class="ov" id="ov"></div>
-  <div class="shell">
-    <!-- SIDEBAR -->
-    <aside class="side" id="side">
-      <div class="side-brand">
-        <div class="brand-ico">E</div><span class="brand-txt">EduPort</span>
-      </div>
-      <nav class="side-nav">
-        <span class="nav-lbl">Menu</span>
-        <a href="index.html" class="nav-a"><i class="fa-solid fa-house"></i><span>Home</span></a>
-        <a href="student-dashboard.html" class="nav-a on"><i class="fa-solid fa-grip"></i><span>Dashboard</span></a>
-        <a href="create-project.html" class="nav-a"><i class="fa-solid fa-plus"></i><span>Add Project</span></a>
-        <a href="projects.html" class="nav-a"><i class="fa-solid fa-rocket"></i><span>Explore</span></a>
-        <span class="nav-lbl" style="margin-top:14px">Account</span>
-        <a href="profile.html" class="nav-a"><i class="fa-solid fa-user"></i><span>Profile</span></a>
-        <a href="messages.html" class="nav-a"><i class="fa-solid fa-envelope"></i><span>Messages</span></a>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Student Dashboard - EduPort</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎓</text></svg>">
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Festive&family=Hanalei&family=Londrina+Shadow&family=Oswald:wght@200..700&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+    <link rel="stylesheet" href="dashboard.css">
+  </head>
+  <body>
+    <div class="dashboard-container">
+      <!-- Sidebar Navigation -->
+      <nav class="sidebar">
+        <div class="sidebar-header">
+          <div class="logo">
+            <div class="logo-icon">
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <circle cx="12" cy="12" r="10"/>
+                <path d="M8 12l2 2 4-4"/>
+              </svg>
+            </div>
+            <span class="logo-text">Edu</span>
+          </div>
+        </div>
+        
+        <div class="sidebar-menu">
+          <div class="menu-section">
+            <ul class="menu-items">
+              <li class="menu-item">
+                <a href="index.html" class="menu-link">
+                  <ion-icon name="home-outline"></ion-icon>
+                  <span>Home</span>
+                </a>
+              </li>
+              <li class="menu-item active">
+                <a href="student-dashboard.html" class="menu-link">
+                  <ion-icon name="grid-outline"></ion-icon>
+                  <span>Dashboard</span>
+                </a>
+              </li>
+              <li class="menu-item">
+                <a href="create-project.html" class="menu-link">
+                  <ion-icon name="add-circle-outline"></ion-icon>
+                  <span>Add Project</span>
+                </a>
+              </li>
+              <li class="menu-item">
+                <a href="profile.html" class="menu-link">
+                  <ion-icon name="person-outline"></ion-icon>
+                  <span>Profile</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
       </nav>
-      <div class="side-foot">
-        <div class="side-usr">
-          <img class="side-ava" id="s-ava"
-            src="https://ui-avatars.com/api/?name=S&background=0d9488&color=fff&bold=true&size=80" alt="">
-          <div>
-            <div class="side-uname" id="s-name">Student</div>
-            <div class="side-urole">Student</div>
-          </div>
-        </div>
-      </div>
-    </aside>
 
-    <!-- MAIN -->
-    <main class="main">
-      <header class="head">
-        <div class="head-l">
-          <button class="mob-tog" id="mob-tog"><i class="fa-solid fa-bars"></i></button>
-          <div class="head-greet">
-            <h1 id="greet">Good evening ✨</h1><span>Discover and build</span>
-          </div>
-        </div>
-        <div class="head-r">
-          <button class="h-btn"><i class="fa-regular fa-bell"></i><span class="dot"></span></button>
-          <div class="p-drop">
-            <div class="p-trig" id="p-trig">
-              <img id="h-ava" src="https://ui-avatars.com/api/?name=S&background=0d9488&color=fff&bold=true&size=80"
-                alt="">
-              <span class="pn" id="h-name">Student</span>
-              <i class="fa-solid fa-chevron-down"></i>
-            </div>
-            <div class="dd-menu" id="dd">
-              <a href="profile.html" class="dd-i"><i class="fa-regular fa-user"></i>My Profile</a>
-              <a href="create-project.html" class="dd-i"><i class="fa-regular fa-square-plus"></i>New Project</a>
-              <div class="dd-sep"></div>
-              <button class="dd-i dng" id="lo"><i class="fa-solid fa-arrow-right-from-bracket"></i>Log Out</button>
+      <!-- Main Content Area -->
+      <main class="main-content">
+        <!-- Top Header Bar -->
+        <header class="top-header">
+          <div class="header-left">
+            <button class="sidebar-toggle" id="sidebar-toggle">
+              <ion-icon name="menu-outline"></ion-icon>
+            </button>
+            <div class="page-title">
+              <h1 id="main-title">Student Dashboard</h1>
+              <p class="page-subtitle">Manage your projects and portfolio</p>
             </div>
           </div>
-        </div>
-      </header>
-
-      <div class="page">
-        <!-- Banner -->
-        <div class="banner fu d1">
-          <div class="ban-z">
-            <h2 id="w-name">Welcome back!</h2>
-            <p>Discover community projects, get inspired, and add your own work to build a portfolio that stands out.
-            </p>
-          </div>
-          <div class="ban-acts">
-            <a href="create-project.html" class="ba pri"><i class="fa-solid fa-plus"></i>New Project</a>
-            <a href="profile.html" class="ba gh"><i class="fa-regular fa-pen-to-square"></i>Edit Profile</a>
-          </div>
-        </div>
-
-        <!-- Stats -->
-        <div class="stats">
-          <div class="st fu d2">
-            <div class="st-top">
-              <div class="st-ic"><i class="fa-solid fa-folder-open"></i></div>
-            </div>
-            <div class="st-val" id="st-proj">0</div>
-            <div class="st-lbl">My Projects</div>
-          </div>
-          <div class="st fu d2">
-            <div class="st-top">
-              <div class="st-ic"><i class="fa-solid fa-thumbs-up"></i></div>
-            </div>
-            <div class="st-val" id="st-up">0</div>
-            <div class="st-lbl">Total Upvotes</div>
-          </div>
-          <div class="st fu d3">
-            <div class="st-top">
-              <div class="st-ic"><i class="fa-solid fa-users"></i></div>
-            </div>
-            <div class="st-val" id="st-community">0</div>
-            <div class="st-lbl">Community Projects</div>
-          </div>
-          <div class="st fu d3">
-            <div class="st-top">
-              <div class="st-ic"><i class="fa-solid fa-trophy"></i></div>
-            </div>
-            <div class="st-val" id="st-ach">0</div>
-            <div class="st-lbl">Achievements</div>
-          </div>
-        </div>
-
-        <!-- Content Grid -->
-        <div class="cg">
-          <!-- Projects -->
-          <div class="sc fu d4">
-            <div class="sc-h">
-              <h2><i class="fa-solid fa-compass" style="color:var(--accent)"></i>Community Projects</h2>
-              <a href="create-project.html" class="btn-pill" style="padding:6px 14px;font-size:.75rem"><i
-                  class="fa-solid fa-plus"></i>Add Project</a>
-            </div>
-            <div class="sc-b">
-              <div class="proj-grid" id="grid">
-                <div class="empty">
-                  <div class="empty-ico"><i class="fa-regular fa-folder-open"></i></div>
-                  <h3>No Projects Yet</h3>
-                  <p>Be the first to create a project and inspire the community.</p><a href="create-project.html"
-                    class="btn-pill"><i class="fa-solid fa-plus"></i>Create Project</a>
+          
+          <div class="header-right">
+            <div class="header-actions">
+              <div class="role-indicator student-role" id="role-indicator">
+                <ion-icon name="person-outline" id="role-icon"></ion-icon>
+                <span id="role-text">Student</span>
+              </div>
+              
+              <div class="profile-section">
+                <div class="profile-dropdown" id="profile-dropdown">
+                  <div class="profile-trigger" id="profile-trigger">
+                    <div class="profile-avatar">
+                      <img src="https://ui-avatars.com/api/?name=Student&background=667eea&color=fff" alt="Profile" id="profile-image">
+                    </div>
+                    <div class="profile-info">
+                      <span class="profile-name" id="profile-name">Loading...</span>
+                      <span class="profile-email" id="profile-email">Loading...</span>
+                    </div>
+                    <ion-icon name="chevron-down-outline" class="dropdown-arrow"></ion-icon>
+                  </div>
+                  
+                  <div class="dropdown-menu" id="dropdown-menu">
+                    <a href="profile.html" class="dropdown-item">
+                      <ion-icon name="person-outline"></ion-icon>
+                      <span>My Profile</span>
+                    </a>
+                    <button class="dropdown-item" id="logout-btn">
+                      <ion-icon name="log-out-outline"></ion-icon>
+                      <span>Log Out</span>
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-          <!-- Right Panel -->
-          <div style="display:flex;flex-direction:column;gap:18px">
-            <div class="sc fu d5">
-              <div class="sc-h">
-                <h2><i class="fa-solid fa-bolt" style="color:var(--warn)"></i>Quick Actions</h2>
+        </header>
+
+        <!-- Dashboard Content -->
+        <div class="dashboard-content">
+          <!-- Stats Cards -->
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-icon">
+                <ion-icon name="folder-outline"></ion-icon>
               </div>
-              <div class="sc-b">
-                <div class="qa-list">
-                  <a href="create-project.html" class="qa">
-                    <div class="qa-ic"><i class="fa-solid fa-plus"></i></div>
-                    <div class="qa-txt"><strong>New Project</strong><span>Showcase your latest work</span></div><i
-                      class="fa-solid fa-chevron-right qa-arr"></i>
-                  </a>
-                  <a href="projects.html" class="qa">
-                    <div class="qa-ic"><i class="fa-solid fa-compass"></i></div>
-                    <div class="qa-txt"><strong>Explore Projects</strong><span>Discover community work</span></div><i
-                      class="fa-solid fa-chevron-right qa-arr"></i>
-                  </a>
-                  <a href="profile.html" class="qa">
-                    <div class="qa-ic"><i class="fa-solid fa-pen-to-square"></i></div>
-                    <div class="qa-txt"><strong>Edit Profile</strong><span>Update your portfolio</span></div><i
-                      class="fa-solid fa-chevron-right qa-arr"></i>
-                  </a>
-                </div>
+              <div class="stat-content">
+                <h3 id="total-projects">0</h3>
+                <p>My Projects</p>
+              </div>
+            </div>
+            
+            <div class="stat-card">
+              <div class="stat-icon">
+                <ion-icon name="thumbs-up-outline"></ion-icon>
+              </div>
+              <div class="stat-content">
+                <h3 id="total-upvotes">0</h3>
+                <p>Total Upvotes</p>
+              </div>
+            </div>
+            
+            <div class="stat-card">
+              <div class="stat-icon">
+                <ion-icon name="eye-outline"></ion-icon>
+              </div>
+              <div class="stat-content">
+                <h3 id="total-views">0</h3>
+                <p>Profile Views</p>
+              </div>
+            </div>
+            
+            <div class="stat-card">
+              <div class="stat-icon">
+                <ion-icon name="trophy-outline"></ion-icon>
+              </div>
+              <div class="stat-content">
+                <h3 id="total-achievements">0</h3>
+                <p>Achievements</p>
               </div>
             </div>
           </div>
+
+          <!-- Quick Actions -->
+          <div class="quick-actions">
+            <h2>Quick Actions</h2>
+            <div class="action-buttons">
+              <a href="create-project.html" class="action-btn primary">
+                <ion-icon name="add-circle-outline"></ion-icon>
+                <span>Create New Project</span>
+              </a>
+              <a href="profile.html" class="action-btn secondary">
+                <ion-icon name="person-outline"></ion-icon>
+                <span>Edit Profile</span>
+              </a>
+            </div>
+          </div>
+
+          <!-- My Projects Section -->
+          <div class="projects-section">
+            <div class="section-header">
+              <h2>My Projects</h2>
+              <a href="create-project.html" class="btn-add-project">
+                <ion-icon name="add-outline"></ion-icon>
+                Add Project
+              </a>
+            </div>
+            
+            <div class="projects-grid" id="projects-grid">
+              <!-- Projects will be loaded here -->
+            </div>
+          </div>
         </div>
-      </div>
-    </main>
-  </div>
+      </main>
+    </div>
 
-  <script>
-    /* ================================================================
-       STUDENT DASHBOARD JS — Discovery mode, NO upvote
-       Uses x-auth-token, fetches GET /api/projects/community
-    ================================================================ */
-    const API_URL = window.location.hostname === 'localhost'
-      ? 'http://localhost:5000'
-      : 'https://eduport-backend-6uib.onrender.com';
+    <!-- Notification Container -->
+    <div id="notification-container"></div>
 
-    document.addEventListener('DOMContentLoaded', async () => {
-      const token = localStorage.getItem('token');
-      const role = localStorage.getItem('userRole');
-      if (!token) { window.location.href = 'role-selection.html'; return; }
-      if (role !== 'student') { showN('Access denied. Students only.', 'error'); setTimeout(() => { localStorage.clear(); window.location.href = 'role-selection.html'; }, 1500); return; }
-
-      setGreeting();
-      await loadProfile();
-      await loadProjects();
-      wireUI();
-      showN('Welcome to your dashboard!', 'success');
-    });
-
-    function setGreeting() {
-      const h = new Date().getHours();
-      document.getElementById('greet').textContent = h < 12 ? 'Good morning ☀️' : h < 17 ? 'Good afternoon 🌤️' : 'Good evening ✨';
-    }
-
-    async function loadProfile() {
-      try {
-        const r = await fetch(`${API_URL}/api/users/me`, { headers: { 'x-auth-token': localStorage.getItem('token') } });
-        if (!r.ok) return;
-        const u = await r.json(), name = u.name || 'Student', first = name.split(' ')[0];
-        const ava = u.profilePictureUrl || `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=0d9488&color=fff&bold=true&size=80`;
-        document.getElementById('h-name').textContent = first;
-        document.getElementById('s-name').textContent = name;
-        document.getElementById('w-name').textContent = `Welcome back, ${first}!`;
-        document.getElementById('h-ava').src = ava;
-        document.getElementById('s-ava').src = ava;
-      } catch (e) { console.error(e) }
-    }
-
-    async function loadProjects() {
-      try {
+    <script>
+      // Student Dashboard JavaScript
+      document.addEventListener('DOMContentLoaded', async function() {
         const token = localStorage.getItem('token');
-        const r = await fetch(`${API_URL}/api/projects/community`, { headers: { 'x-auth-token': token } });
-        if (!r.ok) return;
-        const all = await r.json();
-        const uid = getUid(token);
-        const mine = uid ? all.filter(p => (typeof p.user === 'object' ? p.user._id : p.user) === uid) : [];
-        renderGrid(all);
-        updateStats(mine, all);
-      } catch (e) { console.error(e); showN('Error loading projects', 'error') }
-    }
+        
+        // Role validation - ensure this is a student
+        const userRole = localStorage.getItem('userRole');
+        if (!token) {
+          window.location.href = 'role-selection.html';
+          return;
+        }
+        
+        if (userRole !== 'student') {
+          showNotification('Access denied. Students only.', 'error');
+          setTimeout(() => {
+            localStorage.clear();
+            window.location.href = 'role-selection.html';
+          }, 2000);
+          return;
+        }
 
-    function getUid(t) { try { return JSON.parse(atob(t.split('.')[1])).user.id } catch { return null } }
+        // Initialize dashboard
+        await loadUserProfile();
+        await loadStudentProjects();
+        setupEventListeners();
+        
+        showNotification('Welcome to your Student Dashboard!', 'success');
+      });
 
-    function renderGrid(projects) {
-      const g = document.getElementById('grid');
-      if (!projects.length) { g.innerHTML = `<div class="empty"><div class="empty-ico"><i class="fa-regular fa-folder-open"></i></div><h3>No Projects Yet</h3><p>Be the first to create a project and inspire the community.</p><a href="create-project.html" class="btn-pill"><i class="fa-solid fa-plus"></i>Create Project</a></div>`; return; }
-      g.innerHTML = projects.map((p, i) => {
-        const img = p.screenshotUrl ? (p.screenshotUrl.startsWith('http') ? p.screenshotUrl : `${API_URL}${p.screenshotUrl}`) : 'https://placehold.co/400x240/0b1c1c/14b8a6?text=Project';
-        const ups = p.upvotedBy ? p.upvotedBy.length : (p.upvotes || 0);
-        const tags = (p.techUsed || '').split(',').map(t => t.trim()).filter(Boolean);
-        const authorName = typeof p.user === 'object' ? p.user.name : 'Student';
-        return `<div class="p-card" style="animation-delay:${i * .06}s">
-          <div class="p-img"><img src="${img}" alt="${p.projectName}" loading="lazy" onerror="this.src='https://placehold.co/400x240/0b1c1c/14b8a6?text=Project'"></div>
-          <div class="p-body">
-            <h3>${p.projectName || 'Untitled'}</h3>
-            <p class="p-desc">${p.projectDescription || ''}</p>
-            <div class="p-author">by <strong>${authorName}</strong></div>
-            <div class="p-tags">${tags.slice(0, 3).map(t => `<span class="p-tag">${t}</span>`).join('')}</div>
-          </div>
-          <div class="p-foot">
-            <div class="p-stats"><span class="p-st"><i class="fa-solid fa-thumbs-up"></i>${ups}</span><span class="p-st"><i class="fa-solid fa-calendar"></i>${new Date(p.createdAt).toLocaleDateString()}</span></div>
-            <div class="p-links">
-              ${p.projectUrl ? `<a href="${p.projectUrl}" target="_blank" class="p-lnk" title="Live Demo"><i class="fa-solid fa-arrow-up-right-from-square"></i></a>` : ''}
-              ${p.githubUrl ? `<a href="${p.githubUrl}" target="_blank" class="p-lnk" title="GitHub"><i class="fa-brands fa-github"></i></a>` : ''}
+      // Load user profile data
+      async function loadUserProfile() {
+        try {
+          const token = localStorage.getItem('token');
+          const response = await fetch('http://localhost:3000/api/users/me', {
+            headers: { 'Authorization': `Bearer ${token}` }
+          });
+          
+          if (response.ok) {
+            const user = await response.json();
+            document.getElementById('profile-name').textContent = user.name || 'Student';
+            document.getElementById('profile-email').textContent = user.email || '';
+            
+            if (user.profilePicture) {
+              document.getElementById('profile-image').src = user.profilePicture;
+            }
+          }
+        } catch (error) {
+          console.error('Error loading profile:', error);
+        }
+      }
+
+      // Load student's projects
+      async function loadStudentProjects() {
+        try {
+          const token = localStorage.getItem('token');
+          // Use the community endpoint and filter for user's projects
+          const response = await fetch('http://localhost:3000/api/projects/community', {
+            headers: { 'Authorization': `Bearer ${token}` }
+          });
+          
+          if (response.ok) {
+            const allProjects = await response.json();
+            
+            // Get current user ID from token to filter projects
+            const userId = getUserIdFromToken(token);
+            const userProjects = userId ? allProjects.filter(project => project.user === userId) : [];
+            
+            displayProjects(userProjects);
+            updateStats(userProjects);
+          } else {
+            console.error('Failed to load projects:', response.status);
+            showNotification('Failed to load projects', 'error');
+          }
+        } catch (error) {
+          console.error('Error loading projects:', error);
+          showNotification('Error loading projects', 'error');
+        }
+      }
+      
+      // Helper function to extract user ID from JWT token
+      function getUserIdFromToken(token) {
+        try {
+          const payload = JSON.parse(atob(token.split('.')[1]));
+          return payload.user.id;
+        } catch (error) {
+          console.error('Error parsing token:', error);
+          return null;
+        }
+      }
+
+      // Display projects in grid
+      function displayProjects(projects) {
+        const projectsGrid = document.getElementById('projects-grid');
+        
+        if (projects.length === 0) {
+          projectsGrid.innerHTML = `
+            <div class="empty-state">
+              <ion-icon name="folder-open-outline"></ion-icon>
+              <h3>No Projects Yet</h3>
+              <p>Create your first project to get started!</p>
+              <a href="create-project.html" class="btn-primary">Create Project</a>
+            </div>
+          `;
+          return;
+        }
+        
+        projectsGrid.innerHTML = projects.map(project => `
+          <div class="project-card">
+            <div class="project-image">
+              <img src="${project.screenshotUrl || 'https://placehold.co/300x200/667eea/ffffff?text=Project'}" alt="${project.projectName}">
+            </div>
+            <div class="project-content">
+              <h3>${project.projectName}</h3>
+              <p>${project.projectDescription}</p>
+              <div class="project-tech">
+                <span class="tech-badge">${project.techUsed}</span>
+              </div>
+              <div class="project-stats">
+                <span><ion-icon name="thumbs-up-outline"></ion-icon> ${project.upvotes || 0}</span>
+                <span><ion-icon name="eye-outline"></ion-icon> ${project.views || 0}</span>
+              </div>
+              <div class="project-actions">
+                ${project.projectUrl ? `<a href="${project.projectUrl}" target="_blank" class="btn-view">View</a>` : ''}
+                ${project.githubUrl ? `<a href="${project.githubUrl}" target="_blank" class="btn-github">GitHub</a>` : ''}
+              </div>
             </div>
           </div>
-        </div>`}).join('');
-    }
+        `).join('');
+      }
 
-    function updateStats(mine, all) {
-      anim('st-proj', mine.length);
-      anim('st-up', mine.reduce((s, p) => s + (p.upvotedBy ? p.upvotedBy.length : (p.upvotes || 0)), 0));
-      anim('st-community', all.length);
-    }
+      // Update dashboard stats
+      function updateStats(projects) {
+        const totalProjects = projects.length;
+        const totalUpvotes = projects.reduce((sum, project) => sum + (project.upvotes || 0), 0);
+        
+        document.getElementById('total-projects').textContent = totalProjects;
+        document.getElementById('total-upvotes').textContent = totalUpvotes;
+      }
 
-    function anim(id, target) {
-      const el = document.getElementById(id); if (!el) return; if (!target) { el.textContent = '0'; return; }
-      let c = 0; const step = Math.max(1, Math.ceil(target / 25));
-      const iv = setInterval(() => { c += step; if (c >= target) { c = target; clearInterval(iv); } el.textContent = c; }, 30);
-    }
+      // Setup event listeners
+      function setupEventListeners() {
+        // Profile dropdown
+        const profileTrigger = document.getElementById('profile-trigger');
+        const dropdownMenu = document.getElementById('dropdown-menu');
+        
+        if (profileTrigger && dropdownMenu) {
+          profileTrigger.addEventListener('click', (e) => {
+            e.stopPropagation();
+            dropdownMenu.classList.toggle('show');
+          });
+          
+          document.addEventListener('click', () => {
+            dropdownMenu.classList.remove('show');
+          });
+          
+          dropdownMenu.addEventListener('click', (e) => {
+            e.stopPropagation();
+          });
+        }
+        
+        // Logout
+        const logoutBtn = document.getElementById('logout-btn');
+        if (logoutBtn) {
+          logoutBtn.addEventListener('click', () => {
+            localStorage.clear();
+            sessionStorage.clear();
+            window.location.href = 'index.html';
+          });
+        }
+        
+        // Sidebar toggle
+        const sidebarToggle = document.getElementById('sidebar-toggle');
+        if (sidebarToggle) {
+          sidebarToggle.addEventListener('click', () => {
+            document.querySelector('.sidebar').classList.toggle('collapsed');
+          });
+        }
+      }
 
-    function wireUI() {
-      const trig = document.getElementById('p-trig'), dd = document.getElementById('dd');
-      if (trig && dd) { trig.onclick = e => { e.stopPropagation(); dd.classList.toggle('show') }; document.onclick = () => dd.classList.remove('show'); dd.onclick = e => e.stopPropagation(); }
-      document.getElementById('lo')?.addEventListener('click', () => { localStorage.clear(); sessionStorage.clear(); window.location.href = 'index.html'; });
-      const mt = document.getElementById('mob-tog'), side = document.getElementById('side'), ov = document.getElementById('ov');
-      if (mt && side && ov) { mt.onclick = () => { side.classList.toggle('open'); ov.classList.toggle('show') }; ov.onclick = () => { side.classList.remove('open'); ov.classList.remove('show') }; }
-    }
-
-    function showN(msg, type = 'info') {
-      const t = document.createElement('div'); t.className = `toast ${type}`;
-      const icons = { success: 'fa-check-circle', error: 'fa-circle-exclamation', info: 'fa-circle-info' };
-      t.innerHTML = `<i class="fa-solid ${icons[type] || icons.info}"></i>${msg}`;
-      document.body.appendChild(t); requestAnimationFrame(() => t.classList.add('show'));
-      setTimeout(() => { t.classList.remove('show'); setTimeout(() => { if (document.body.contains(t)) document.body.removeChild(t); }, 400); }, 3000);
-    }
-  </script>
-</body>
-
+      // Notification system
+      function showNotification(message, type = 'info') {
+        const notification = document.createElement('div');
+        notification.className = `notification ${type}`;
+        notification.textContent = message;
+        
+        document.body.appendChild(notification);
+        
+        setTimeout(() => {
+          notification.classList.add('show');
+        }, 10);
+        
+        setTimeout(() => {
+          notification.classList.remove('show');
+          setTimeout(() => {
+            if (document.body.contains(notification)) {
+              document.body.removeChild(notification);
+            }
+          }, 300);
+        }, 3000);
+      }
+    </script>
+  </body>
 </html>

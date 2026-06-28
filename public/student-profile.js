@@ -1,18 +1,13 @@
-// Smart API URL: auto-switches between local dev and production
-const API_URL = window.location.hostname === 'localhost'
-    ? 'http://localhost:5000'
-    : 'https://eduport-backend-6uib.onrender.com';
-
 // Student Profile Page JavaScript
 let currentStudentId = null;
 let currentUser = null;
 
 // Initialize page when DOM loads
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', function() {
     // Get student ID from URL parameters
     const urlParams = new URLSearchParams(window.location.search);
     currentStudentId = urlParams.get('studentId');
-
+    
     if (!currentStudentId) {
         showError('No student ID provided');
         return;
@@ -31,7 +26,7 @@ async function checkAuth() {
     }
 
     try {
-        const response = await fetch(`${API_URL}/api/users/me`, {
+        const response = await fetch('/api/users/me', {
             headers: {
                 'x-auth-token': token
             }
@@ -42,7 +37,7 @@ async function checkAuth() {
         }
 
         currentUser = await response.json();
-
+        
         // Check if user is a teacher
         if (currentUser.role !== 'teacher') {
             showError('Access denied. Only teachers can view student profiles.');
@@ -62,7 +57,7 @@ async function checkAuth() {
 async function loadStudentProfile() {
     try {
         const token = localStorage.getItem('token');
-        const response = await fetch(`${API_URL}/api/students/${currentStudentId}/profile`, {
+        const response = await fetch(`/api/students/${currentStudentId}/profile`, {
             headers: {
                 'x-auth-token': token
             }
@@ -105,7 +100,7 @@ function displayStudentProfile(student) {
     document.getElementById('studentName').textContent = student.fullName || student.name || 'Unknown Student';
     document.getElementById('studentUsername').textContent = student.username ? `@${student.username}` : '@username';
     document.getElementById('studentEmail').textContent = student.email || 'No email provided';
-
+    
     // Join date
     const joinDate = new Date(student.createdAt).toLocaleDateString('en-US', {
         year: 'numeric',
@@ -187,7 +182,7 @@ function displayResume(resumeUrl) {
 async function loadStudentProjects() {
     try {
         const token = localStorage.getItem('token');
-        const response = await fetch(`${API_URL}/api/projects`, {
+        const response = await fetch('/api/projects', {
             headers: {
                 'x-auth-token': token
             }
@@ -198,16 +193,16 @@ async function loadStudentProjects() {
         }
 
         const projects = await response.json();
-
+        
         // Filter projects by this student
-        const studentProjects = projects.filter(project =>
+        const studentProjects = projects.filter(project => 
             project.user && project.user._id === currentStudentId
         );
 
         displayStudentProjects(studentProjects);
     } catch (error) {
         console.error('Failed to load student projects:', error);
-        document.getElementById('studentProjects').innerHTML =
+        document.getElementById('studentProjects').innerHTML = 
             '<p class="loading-text" style="color: var(--error);">Failed to load projects</p>';
     }
 }
@@ -291,7 +286,7 @@ function showNotification(message, type = 'info') {
     const notification = document.getElementById('notification');
     notification.textContent = message;
     notification.className = `notification ${type} show`;
-
+    
     setTimeout(() => {
         notification.classList.remove('show');
     }, 3000);

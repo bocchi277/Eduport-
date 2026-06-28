@@ -12,13 +12,10 @@
   --transition-main: 0.175, 0.685, 0.32;
   --font-main: "Poppins";
 }
-
-
-html {
+html{
   scroll-behavior: smooth;
 
 }
-
 html,
 body {
   margin: 0;
@@ -783,7 +780,6 @@ a.button {
   margin-top: 5vh;
   transition: all 0.4s ease-in-out;
 }
-
-a.button:hover {
+a.button:hover{
   color: #0b213e;
 }

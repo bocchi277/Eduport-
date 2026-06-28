@@ -371,11 +371,11 @@ app.put('/api/users/me', auth, profileUpload.fields([
                 const profileFile = req.files.profilePicture?.[0] || req.files.profileImage?.[0];
                 if (profileFile) {
                     // Delete old profile image if exists
-                    if (currentUser.profileImage && fs.existsSync(currentUser.profileImage)) {
-                        fs.unlinkSync(currentUser.profileImage);
+                    if (currentUser.profileImage && fs.existsSync(path.join(__dirname, currentUser.profileImage))) {
+                        fs.unlinkSync(path.join(__dirname, currentUser.profileImage));
                     }
                     if (currentUser.profilePictureUrl && currentUser.profilePictureUrl.startsWith('/uploads/')) {
-                        const oldPath = path.join(__dirname, '..', currentUser.profilePictureUrl);
+                        const oldPath = path.join(__dirname, currentUser.profilePictureUrl);
                         if (fs.existsSync(oldPath)) {
                             fs.unlinkSync(oldPath);
                         }
@@ -388,8 +388,8 @@ app.put('/api/users/me', auth, profileUpload.fields([
             if (req.files.resume) {
                 const resumeFile = req.files.resume[0];
                 // Delete old resume if exists
-                if (currentUser.resumeUrl && fs.existsSync(currentUser.resumeUrl)) {
-                    fs.unlinkSync(currentUser.resumeUrl);
+                if (currentUser.resumeUrl && fs.existsSync(path.join(__dirname, currentUser.resumeUrl))) {
+                    fs.unlinkSync(path.join(__dirname, currentUser.resumeUrl));
                 }
                 updatedFields.resumeUrl = `/uploads/resumes/${resumeFile.filename}`;
             }

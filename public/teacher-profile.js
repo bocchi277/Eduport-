@@ -1,19 +1,14 @@
-// Smart API URL: auto-switches between local dev and production
-const API_URL = window.location.hostname === 'localhost'
-    ? 'http://localhost:5000'
-    : 'https://eduport-backend-6uib.onrender.com';
-
 // Teacher Profile JavaScript - Built from scratch to match student profile exactly
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', function() {
     // Check authentication and role
     const token = localStorage.getItem('token');
     const userRole = localStorage.getItem('userRole');
-
+    
     if (!token || userRole !== 'teacher') {
         window.location.href = 'role-selection.html';
         return;
     }
-
+    
     // Initialize profile page
     initializeProfile();
     loadUserProfile();
@@ -27,16 +22,16 @@ let currentCommentProjectId = null;
 // Initialize profile page
 function initializeProfile() {
     console.log('Initializing teacher profile page...');
-
+    
     // Setup character counter for bio
     const bioTextarea = document.getElementById('bio');
     const charCount = document.querySelector('.char-count');
-
+    
     if (bioTextarea && charCount) {
-        bioTextarea.addEventListener('input', function () {
+        bioTextarea.addEventListener('input', function() {
             const count = this.value.length;
             charCount.textContent = `${count} / 500 characters`;
-
+            
             if (count > 500) {
                 charCount.style.color = '#e74c3c';
             } else {
@@ -50,10 +45,10 @@ function initializeProfile() {
 async function loadUserProfile() {
     try {
         const token = localStorage.getItem('token');
-        const response = await fetch(`${API_URL}/api/users/me`, {
+        const response = await fetch('http://localhost:3000/api/users/me', {
             headers: { 'Authorization': `Bearer ${token}` }
         });
-
+        
         if (response.ok) {
             const user = await response.json();
             populateProfileForm(user);
@@ -72,18 +67,18 @@ function populateProfileForm(user) {
     document.getElementById('full-name').value = user.name || '';
     document.getElementById('username').value = user.username || '';
     document.getElementById('bio').value = user.bio || '';
-
+    
     // Update character count
     const bioLength = (user.bio || '').length;
     document.querySelector('.char-count').textContent = `${bioLength} / 500 characters`;
-
+    
     // Social links
     const socialLinks = user.socialLinks || {};
     document.getElementById('linkedin').value = socialLinks.linkedin || '';
     document.getElementById('github').value = socialLinks.github || '';
     document.getElementById('portfolio').value = socialLinks.portfolio || '';
     document.getElementById('twitter').value = socialLinks.twitter || '';
-
+    
     // Profile image
     if (user.profileImage) {
         document.getElementById('profile-image-preview').src = user.profileImage;
@@ -96,10 +91,10 @@ function populateProfileForm(user) {
 async function loadAllProjects() {
     try {
         const token = localStorage.getItem('token');
-        const response = await fetch(`${API_URL}/api/projects/community`, {
+        const response = await fetch('http://localhost:3000/api/projects/community', {
             headers: { 'Authorization': `Bearer ${token}` }
         });
-
+        
         if (response.ok) {
             const projects = await response.json();
             displayProjects(projects);
@@ -115,7 +110,7 @@ async function loadAllProjects() {
 // Display projects in grid (same as student profile but with teacher voting/commenting)
 function displayProjects(projects) {
     const projectsGrid = document.getElementById('projects-grid');
-
+    
     if (projects.length === 0) {
         projectsGrid.innerHTML = `
             <div class="empty-state">
@@ -126,7 +121,7 @@ function displayProjects(projects) {
         `;
         return;
     }
-
+    
     projectsGrid.innerHTML = projects.map(project => `
         <div class="project-card">
             <div class="project-image">
@@ -200,19 +195,19 @@ function getCurrentUserId() {
 async function handleVote(projectId, voteType, button) {
     try {
         const token = localStorage.getItem('token');
-        const response = await fetch(`${API_URL}/api/projects/${projectId}/${voteType}`, {
+        const response = await fetch(`http://localhost:3000/api/projects/${projectId}/${voteType}`, {
             method: 'PUT',
             headers: { 'Authorization': `Bearer ${token}` }
         });
-
+        
         if (response.ok) {
             showNotification(`${voteType === 'upvote' ? 'Upvoted' : 'Downvoted'} successfully!`, 'success');
-
+            
             // Update button states
             const projectCard = button.closest('.project-card');
             const upvoteBtn = projectCard.querySelector('.upvote');
             const downvoteBtn = projectCard.querySelector('.downvote');
-
+            
             if (voteType === 'upvote') {
                 upvoteBtn.classList.add('voted');
                 upvoteBtn.disabled = true;
@@ -224,7 +219,7 @@ async function handleVote(projectId, voteType, button) {
                 upvoteBtn.classList.remove('voted');
                 upvoteBtn.disabled = false;
             }
-
+            
             // Reload projects to show updated counts
             loadAllProjects();
         } else {
@@ -242,7 +237,7 @@ function openCommentModal(projectId) {
     currentCommentProjectId = projectId;
     const modal = document.getElementById('comment-modal');
     const commentText = document.getElementById('comment-text');
-
+    
     commentText.value = '';
     modal.style.display = 'flex';
     commentText.focus();
@@ -258,18 +253,18 @@ function closeCommentModal() {
 // Submit comment
 async function submitComment() {
     if (!currentCommentProjectId) return;
-
+    
     const commentText = document.getElementById('comment-text');
     const comment = commentText.value.trim();
-
+    
     if (!comment) {
         showNotification('Please enter a comment', 'error');
         return;
     }
-
+    
     try {
         const token = localStorage.getItem('token');
-        const response = await fetch(`${API_URL}/api/projects/${currentCommentProjectId}/comments`, {
+        const response = await fetch(`http://localhost:3000/api/projects/${currentCommentProjectId}/comments`, {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${token}`,
@@ -277,7 +272,7 @@ async function submitComment() {
             },
             body: JSON.stringify({ text: comment })
         });
-
+        
         if (response.ok) {
             showNotification('Comment added successfully!', 'success');
             closeCommentModal();
@@ -304,37 +299,37 @@ function setupEventListeners() {
     // Profile form submission
     const profileForm = document.getElementById('profile-form');
     profileForm.addEventListener('submit', handleProfileSubmit);
-
+    
     // Profile image upload
     const profileImageWrapper = document.querySelector('.profile-image-wrapper');
     const profileImageInput = document.getElementById('profile-image-input');
-
+    
     profileImageWrapper.addEventListener('click', () => {
         profileImageInput.click();
     });
-
+    
     profileImageInput.addEventListener('change', handleProfileImageUpload);
-
+    
     // Resume upload
     const resumeUploadArea = document.getElementById('resume-upload-area');
     const resumeInput = document.getElementById('resume-input');
-
+    
     resumeUploadArea.addEventListener('click', () => {
         resumeInput.click();
     });
-
+    
     resumeInput.addEventListener('change', handleResumeUpload);
-
+    
     // Drag and drop for resume
     resumeUploadArea.addEventListener('dragover', (e) => {
         e.preventDefault();
         resumeUploadArea.classList.add('drag-over');
     });
-
+    
     resumeUploadArea.addEventListener('dragleave', () => {
         resumeUploadArea.classList.remove('drag-over');
     });
-
+    
     resumeUploadArea.addEventListener('drop', (e) => {
         e.preventDefault();
         resumeUploadArea.classList.remove('drag-over');
@@ -343,15 +338,15 @@ function setupEventListeners() {
             handleResumeFile(files[0]);
         }
     });
-
+    
     // Cancel button
     document.getElementById('cancel-btn').addEventListener('click', () => {
         window.location.href = 'teacher-dashboard.html';
     });
-
+    
     // Remove resume button
     document.getElementById('remove-resume-btn').addEventListener('click', removeResume);
-
+    
     // Modal close on outside click
     document.getElementById('comment-modal').addEventListener('click', (e) => {
         if (e.target.id === 'comment-modal') {
@@ -363,12 +358,12 @@ function setupEventListeners() {
 // Handle profile form submission
 async function handleProfileSubmit(e) {
     e.preventDefault();
-
+    
     const formData = new FormData();
     formData.append('name', document.getElementById('full-name').value);
     formData.append('username', document.getElementById('username').value);
     formData.append('bio', document.getElementById('bio').value);
-
+    
     const socialLinks = JSON.stringify({
         linkedin: document.getElementById('linkedin').value,
         github: document.getElementById('github').value,
@@ -376,29 +371,29 @@ async function handleProfileSubmit(e) {
         twitter: document.getElementById('twitter').value
     });
     formData.append('socialLinks', socialLinks);
-
+    
     // Add profile image if selected
     const profileImageInput = document.getElementById('profile-image-input');
     if (profileImageInput.files[0]) {
         formData.append('profileImage', profileImageInput.files[0]);
     }
-
+    
     // Add resume if selected
     const resumeInput = document.getElementById('resume-input');
     if (resumeInput.files[0]) {
         formData.append('resume', resumeInput.files[0]);
     }
-
+    
     try {
         const token = localStorage.getItem('token');
-        const response = await fetch(`${API_URL}/api/users/update-profile`, {
+        const response = await fetch('http://localhost:3000/api/users/update-profile', {
             method: 'PUT',
             headers: {
                 'Authorization': `Bearer ${token}`
             },
             body: formData
         });
-
+        
         if (response.ok) {
             showNotification('Profile updated successfully!', 'success');
         } else {
@@ -416,7 +411,7 @@ function handleProfileImageUpload(e) {
     const file = e.target.files[0];
     if (file) {
         const reader = new FileReader();
-        reader.onload = function (e) {
+        reader.onload = function(e) {
             document.getElementById('profile-image-preview').src = e.target.result;
         };
         reader.readAsDataURL(file);
@@ -436,18 +431,18 @@ function handleResumeFile(file) {
     // Validate file type
     const allowedTypes = ['.pdf', '.doc', '.docx'];
     const fileExtension = '.' + file.name.split('.').pop().toLowerCase();
-
+    
     if (!allowedTypes.includes(fileExtension)) {
         showNotification('Please upload a PDF, DOC, or DOCX file', 'error');
         return;
     }
-
+    
     // Validate file size (10MB)
     if (file.size > 10 * 1024 * 1024) {
         showNotification('File size must be less than 10MB', 'error');
         return;
     }
-
+    
     // Show file preview
     document.getElementById('resume-upload-area').style.display = 'none';
     document.getElementById('resume-preview').style.display = 'block';
@@ -476,20 +471,20 @@ function showNotification(message, type = 'info') {
     const notification = document.getElementById('notification');
     const icon = notification.querySelector('.notification-icon');
     const messageEl = notification.querySelector('.notification-message');
-
+    
     // Set icon based on type
     const icons = {
         success: 'fas fa-check-circle',
         error: 'fas fa-exclamation-circle',
         info: 'fas fa-info-circle'
     };
-
+    
     icon.className = `notification-icon ${icons[type] || icons.info}`;
     messageEl.textContent = message;
-
+    
     notification.className = `notification ${type}`;
     notification.style.display = 'block';
-
+    
     // Auto hide after 3 seconds
     setTimeout(() => {
         notification.style.display = 'none';

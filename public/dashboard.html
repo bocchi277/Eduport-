@@ -1,133 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Loading — EduPort</title>
-    <link rel="icon"
-        href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎓</text></svg>">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet" />
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box
-        }
-
-        body {
-            font-family: 'Inter', system-ui, sans-serif;
-            background: #060a18;
-            color: #e2e8f0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            overflow: hidden
-        }
-
-        .gate {
-            text-align: center;
-            animation: fadeIn .5s ease
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(12px)
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0)
-            }
-        }
-
-        .spinner {
-            width: 48px;
-            height: 48px;
-            border: 3px solid rgba(99, 102, 241, .15);
-            border-top-color: #6366f1;
-            border-radius: 50%;
-            animation: spin .7s linear infinite;
-            margin: 0 auto 20px
-        }
-
-        @keyframes spin {
-            to {
-                transform: rotate(360deg)
-            }
-        }
-
-        h1 {
-            font-size: 1.3rem;
-            font-weight: 700;
-            margin-bottom: 6px;
-            background: linear-gradient(135deg, #6366f1, #a78bfa);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent
-        }
-
-        p {
-            font-size: .85rem;
-            color: #64748b
-        }
-    </style>
-</head>
-
-<body>
-    <div class="gate">
-        <div class="spinner"></div>
-        <h1>EduPort</h1>
-        <p>Redirecting to your dashboard…</p>
-    </div>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Redirecting...</title>
     <script>
-        (function () {
-            const API_URL = window.location.hostname === 'localhost'
-                ? 'http://localhost:5000'
-                : 'https://eduport-backend-6uib.onrender.com';
-            // Handle token from URL (e.g. after Google OAuth)
-            const params = new URLSearchParams(window.location.search);
-            const urlToken = params.get('token');
-            if (urlToken) {
-                localStorage.setItem('token', urlToken);
-                window.history.replaceState({}, document.title, 'dashboard.html');
-            }
-
+        document.addEventListener('DOMContentLoaded', () => {
             const token = localStorage.getItem('token');
-
-            // No token → login
-            if (!token) {
-                window.location.href = 'login.html';
+            const role = localStorage.getItem('userRole');
+            
+            if (!token || !role) {
+                window.location.replace('login.html');
                 return;
             }
-
-            // Fetch user profile to determine role
-            fetch(`${API_URL}/api/users/me`, {
-                headers: { 'x-auth-token': token }
-            })
-                .then(res => {
-                    if (!res.ok) throw new Error('Unauthorized');
-                    return res.json();
-                })
-                .then(user => {
-                    const role = user.role || localStorage.getItem('userRole') || 'student';
-                    localStorage.setItem('userRole', role);
-
-                    if (role === 'teacher') {
-                        window.location.href = 'teacher-dashboard.html';
-                    } else {
-                        window.location.href = 'student-dashboard.html';
-                    }
-                })
-                .catch(() => {
-                    // Token invalid → clear and redirect to login
-                    localStorage.clear();
-                    sessionStorage.clear();
-                    window.location.href = 'login.html';
-                });
-        })();
+            
+            if (role === 'teacher') {
+                window.location.replace('teacher-dashboard.html' + window.location.search);
+            } else if (role === 'student') {
+                window.location.replace('student-dashboard.html' + window.location.search);
+            } else {
+                window.location.replace('login.html');
+            }
+        });
     </script>
+</head>
+<body>
+    <p>Redirecting to your dashboard...</p>
 </body>
-
 </html>
