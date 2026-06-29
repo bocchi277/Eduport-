@@ -1,3 +1,8 @@
+// Smart API URL: auto-switches between local dev and production
+const API_URL = window.location.hostname === 'localhost'
+    ? 'http://localhost:5000'
+    : 'https://eduport-1.onrender.com';
+
 document.addEventListener('DOMContentLoaded', () => {
     // --- Part 1: Handle Token on Page Load ---
     // This section checks if a token was passed in the URL from the Google login.
@@ -49,11 +54,11 @@ document.addEventListener('DOMContentLoaded', () => {
             window.location.href = 'login.html';
         });
     }
-    
+
     // --- API Call to Fetch User Profile Data ---
     const loadUserProfile = async () => {
         try {
-            const res = await fetch('https://eduport-1.onrender.com/api/users/me', {
+            const res = await fetch(`${API_URL}/api/users/me`, {
                 headers: { 'x-auth-token': token }
             });
 
@@ -61,9 +66,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 // This will catch 401 Unauthorized errors if the token is bad
                 throw new Error('Could not fetch user profile. Token might be invalid.');
             }
-            
+
             const user = await res.json();
-            
+
             // Update UI with user data
             if (userProfileImg && user.profilePictureUrl) {
                 userProfileImg.src = user.profilePictureUrl;
@@ -83,7 +88,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- API Call to Fetch and Display Projects ---
     const fetchAndDisplayProjects = async () => {
         try {
-            const res = await fetch('https://eduport-1.onrender.com/api/projects', {
+            const res = await fetch(`${API_URL}/api/projects`, {
                 headers: { 'x-auth-token': token }
             });
 
@@ -93,7 +98,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const projects = await res.json();
             projectGrid.innerHTML = ''; // Clear the grid before adding new projects
-            
+
             if (projects.length === 0) {
                 projectGrid.innerHTML = '<p style="color: var(--text-secondary);">You have not created any projects yet. Get started by creating one!</p>';
             } else {
@@ -140,7 +145,7 @@ function viewStudentProfile(studentId) {
 function toggleComments(projectId) {
     const commentsContainer = document.getElementById(`comments-${projectId}`);
     const isVisible = commentsContainer.style.display !== 'none';
-    
+
     if (isVisible) {
         commentsContainer.style.display = 'none';
     } else {
@@ -153,7 +158,7 @@ function toggleComments(projectId) {
 async function loadComments(projectId) {
     try {
         const token = localStorage.getItem('token');
-        const response = await fetch(`https://eduport-1.onrender.com/api/projects/${projectId}/comments`, {
+        const response = await fetch(`${API_URL}/api/projects/${projectId}/comments`, {
             headers: {
                 'x-auth-token': token
             }
@@ -175,7 +180,7 @@ async function loadComments(projectId) {
 // Display comments in the comments list
 function displayComments(projectId, comments) {
     const commentsList = document.getElementById(`comments-list-${projectId}`);
-    
+
     if (comments.length === 0) {
         commentsList.innerHTML = '<p class="no-comments">No comments yet. Be the first to comment!</p>';
         return;
@@ -196,7 +201,7 @@ function displayComments(projectId, comments) {
 async function addComment(projectId) {
     const commentInput = document.getElementById(`comment-input-${projectId}`);
     const commentText = commentInput.value.trim();
-    
+
     if (!commentText) {
         showNotification('Please enter a comment', 'error');
         return;
@@ -209,7 +214,7 @@ async function addComment(projectId) {
 
     try {
         const token = localStorage.getItem('token');
-        const response = await fetch(`https://eduport-1.onrender.com/api/projects/${projectId}/comments`, {
+        const response = await fetch(`${API_URL}/api/projects/${projectId}/comments`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -224,24 +229,24 @@ async function addComment(projectId) {
         }
 
         const newComment = await response.json();
-        
+
         // Clear the input
         commentInput.value = '';
-        
+
         // Reload comments to show the new one
         loadComments(projectId);
-        
+
         // Update comment count in the toggle button
         const commentToggle = document.querySelector(`[onclick="toggleComments('${projectId}')"]`);
         const currentCount = parseInt(commentToggle.textContent.match(/\d+/)[0]) || 0;
         commentToggle.innerHTML = `<i class="fas fa-comment"></i> Comments (${currentCount + 1})`;
-        
+
         // Update comment count in stats
         const statsCommentCount = document.querySelector(`[data-project-id="${projectId}"]`)?.closest('.project-card')?.querySelector('.stat-item i.fa-comments')?.parentElement;
         if (statsCommentCount) {
             statsCommentCount.innerHTML = `<i class="fas fa-comments"></i> ${currentCount + 1}`;
         }
-        
+
         showNotification('Comment added successfully!', 'success');
     } catch (error) {
         console.error('Failed to add comment:', error);
@@ -259,10 +264,10 @@ function showNotification(message, type = 'info') {
         notification.className = 'notification';
         document.body.appendChild(notification);
     }
-    
+
     notification.textContent = message;
     notification.className = `notification ${type} show`;
-    
+
     setTimeout(() => {
         notification.classList.remove('show');
     }, 3000);

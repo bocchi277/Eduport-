@@ -1,5 +1,10 @@
+// Smart API URL: auto-switches between local dev and production
+const API_URL = window.location.hostname === 'localhost'
+    ? 'http://localhost:5000'
+    : 'https://eduport-1.onrender.com';
+
 // Profile Page JavaScript
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     // DOM Elements
     const profileForm = document.getElementById('profile-form');
     const profileImageInput = document.getElementById('profile-image-input');
@@ -32,7 +37,7 @@ document.addEventListener('DOMContentLoaded', function() {
     async function loadUserProfile() {
         // Show loading state
         showLoadingState(true);
-        
+
         try {
             const token = localStorage.getItem('token');
             if (!token) {
@@ -40,7 +45,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
 
-            const response = await fetch('https://eduport-1.onrender.com/api/users/me', {
+            const response = await fetch(`${API_URL}/api/users/me`, {
                 method: 'GET',
                 headers: {
                     'x-auth-token': token,
@@ -72,29 +77,29 @@ document.addEventListener('DOMContentLoaded', function() {
     // Show/hide loading state
     function showLoadingState(isLoading) {
         const formElements = profileForm.querySelectorAll('input, textarea, button');
-        
+
         if (isLoading) {
             // Show loading in form fields
             document.getElementById('full-name').placeholder = 'Loading...';
             document.getElementById('username').placeholder = 'Loading...';
-            
+
             // Disable form elements
             formElements.forEach(element => {
                 element.disabled = true;
             });
-            
+
             // Show loading in save button
             saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading...';
         } else {
             // Reset placeholders
             document.getElementById('full-name').placeholder = 'Enter your full name';
             document.getElementById('username').placeholder = 'Choose a unique username';
-            
+
             // Enable form elements
             formElements.forEach(element => {
                 element.disabled = false;
             });
-            
+
             // Reset save button
             saveBtn.innerHTML = '<i class="fas fa-save"></i> Save Changes';
         }
@@ -117,9 +122,9 @@ document.addEventListener('DOMContentLoaded', function() {
         // Profile image - use existing or generate from name/email
         if (userData.profileImage || userData.profilePictureUrl) {
             const imageUrl = userData.profileImage || userData.profilePictureUrl;
-            const fullImageUrl = imageUrl.startsWith('http') ? imageUrl : `https://eduport-1.onrender.com${imageUrl}`;
+            const fullImageUrl = imageUrl.startsWith('http') ? imageUrl : `${API_URL}${imageUrl}`;
             profileImagePreview.src = fullImageUrl;
-            
+
             // Handle image load errors
             profileImagePreview.onerror = () => {
                 const initial = (userData.name || userData.email || 'P').charAt(0).toUpperCase();
@@ -195,7 +200,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Preview image
         const reader = new FileReader();
-        reader.onload = function(e) {
+        reader.onload = function (e) {
             profileImagePreview.src = e.target.result;
         };
         reader.readAsDataURL(file);
@@ -214,7 +219,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Validate file type
         const allowedTypes = ['.pdf', '.doc', '.docx'];
         const fileExtension = '.' + file.name.split('.').pop().toLowerCase();
-        
+
         if (!allowedTypes.includes(fileExtension)) {
             showNotification('Please select a valid resume file (PDF, DOC, or DOCX)', 'error');
             return;
@@ -264,7 +269,7 @@ document.addEventListener('DOMContentLoaded', function() {
     function handleDrop(event) {
         event.preventDefault();
         resumeUploadArea.classList.remove('dragover');
-        
+
         const files = event.dataTransfer.files;
         if (files.length > 0) {
             processResumeFile(files[0]);
@@ -276,7 +281,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const currentLength = bioTextarea.value.length;
         const maxLength = 500;
         charCount.textContent = `${currentLength} / ${maxLength} characters`;
-        
+
         if (currentLength > maxLength) {
             charCount.style.color = 'var(--error)';
             bioTextarea.value = bioTextarea.value.substring(0, maxLength);
@@ -289,7 +294,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Form validation
     function setupFormValidation() {
         const requiredFields = ['full-name', 'username'];
-        
+
         requiredFields.forEach(fieldId => {
             const field = document.getElementById(fieldId);
             if (field) {
@@ -302,7 +307,7 @@ document.addEventListener('DOMContentLoaded', function() {
     function validateField(event) {
         const field = event.target;
         const value = field.value.trim();
-        
+
         clearFieldError(field);
 
         if (field.hasAttribute('required') && !value) {
@@ -318,7 +323,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     return false;
                 }
                 break;
-            
+
             case 'linkedin':
             case 'github':
             case 'portfolio':
@@ -336,15 +341,15 @@ document.addEventListener('DOMContentLoaded', function() {
     // Show field error
     function showFieldError(field, message) {
         clearFieldError(field);
-        
+
         field.style.borderColor = 'var(--error)';
-        
+
         const errorElement = document.createElement('small');
         errorElement.className = 'field-error';
         errorElement.style.color = 'var(--error)';
         errorElement.style.marginTop = '0.25rem';
         errorElement.textContent = message;
-        
+
         field.parentNode.appendChild(errorElement);
     }
 
@@ -353,9 +358,9 @@ document.addEventListener('DOMContentLoaded', function() {
         if (typeof field === 'object' && field.target) {
             field = field.target;
         }
-        
+
         field.style.borderColor = 'var(--border-color)';
-        
+
         const existingError = field.parentNode.querySelector('.field-error');
         if (existingError) {
             existingError.remove();
@@ -416,7 +421,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
 
             const token = localStorage.getItem('token');
-            const response = await fetch('https://eduport-1.onrender.com/api/users/me', {
+            const response = await fetch(`${API_URL}/api/users/me`, {
                 method: 'PUT',
                 headers: {
                     'x-auth-token': token
@@ -428,7 +433,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 const updatedData = await response.json();
                 currentUserData = updatedData;
                 showNotification('Profile updated successfully!', 'success');
-                
+
                 // Redirect back to dashboard after a short delay
                 setTimeout(() => {
                     window.location.href = 'dashboard.html';
@@ -510,7 +515,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Set type and icon
         notification.className = `notification ${type}`;
-        
+
         switch (type) {
             case 'success':
                 iconElement.className = 'notification-icon fas fa-check-circle';
@@ -538,7 +543,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Handle page unload warning
-    window.addEventListener('beforeunload', function(event) {
+    window.addEventListener('beforeunload', function (event) {
         if (hasUnsavedChanges()) {
             event.preventDefault();
             event.returnValue = '';

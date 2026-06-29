@@ -1,4 +1,9 @@
-document.addEventListener('DOMContentLoaded', function() {
+// Smart API URL: auto-switches between local dev and production
+const API_URL = window.location.hostname === 'localhost'
+    ? 'http://localhost:5000'
+    : 'https://eduport-1.onrender.com';
+
+document.addEventListener('DOMContentLoaded', function () {
     // --- Helper function for notifications ---
     // (You can move this to a shared 'utils.js' file later if you want)
     function showNotification(message, type = 'info') {
@@ -23,7 +28,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const togglePassword = document.querySelector('.toggle-password');
     const passwordInput = document.querySelector('#password');
     if (togglePassword && passwordInput) {
-        togglePassword.addEventListener('click', function() {
+        togglePassword.addEventListener('click', function () {
             const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
             passwordInput.setAttribute('type', type);
             this.querySelector('i').classList.toggle('fa-eye');
@@ -34,7 +39,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // --- Form submission for Registration ---
     const registerForm = document.getElementById('register-form');
     if (registerForm) {
-        registerForm.addEventListener('submit', async function(e) {
+        registerForm.addEventListener('submit', async function (e) {
             e.preventDefault();
 
             const name = document.getElementById('name').value;
@@ -51,12 +56,12 @@ document.addEventListener('DOMContentLoaded', function() {
             }
 
             // Provide visual feedback
-            if(buttonInner) buttonInner.textContent = 'Signing Up...';
+            if (buttonInner) buttonInner.textContent = 'Signing Up...';
             signUpBtn.disabled = true;
 
             try {
                 // Send the data to the backend's POST /register route
-                const response = await fetch('https://eduport-1.onrender.com/register', {
+                const response = await fetch(`${API_URL}/register`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -84,17 +89,17 @@ document.addEventListener('DOMContentLoaded', function() {
                 showNotification('Could not connect to the server.', 'error');
             } finally {
                 // Reset the button
-                if(buttonInner) buttonInner.textContent = 'Sign Up';
+                if (buttonInner) buttonInner.textContent = 'Sign Up';
                 signUpBtn.disabled = false;
             }
         });
     }
-    
+
     // You can add social login handlers here as well if needed
     const googleBtn = document.querySelector('.social-btn.google');
     if (googleBtn) {
         googleBtn.addEventListener('click', () => {
-            window.location.href = 'https://eduport-1.onrender.com/auth/google';
+            window.location.href = `${API_URL}/auth/google`;
         });
     }
 });
