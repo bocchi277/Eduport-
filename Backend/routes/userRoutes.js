@@ -127,6 +127,20 @@ router.get('/api/users/me', auth, async (req, res) => {
     }
 });
 
+// @route   GET api/students/:userId/profile
+router.get('/api/students/:userId/profile', auth, async (req, res) => {
+    try {
+        const student = await User.findById(req.params.userId).select('-password');
+        if (!student) {
+            return res.status(404).json({ message: 'Student not found' });
+        }
+        res.json(student);
+    } catch (err) {
+        console.error('Get student profile error:', err.message);
+        res.status(500).json({ message: 'Server Error' });
+    }
+});
+
 // @route   PUT api/users/update-profile
 router.put('/api/users/update-profile', auth, profileUpload.fields([
     { name: 'profileImage', maxCount: 1 },

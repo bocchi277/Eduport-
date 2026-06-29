@@ -23,13 +23,6 @@
     const token = localStorage.getItem('token');
     const userRole = localStorage.getItem('userRole');
     
-    console.log('Role Validation:', {
-        currentPage,
-        requiredRole,
-        userRole,
-        hasToken: !!token
-    });
-    
     // Validation checks
     function validateAccess() {
         // Check 1: User must be logged in
@@ -53,7 +46,6 @@
             return false;
         }
         
-        console.log('Access granted:', { userRole, requiredRole });
         return true;
     }
     
@@ -104,7 +96,6 @@
                 }
             }
             
-            console.log('Backend token validation successful');
             return true;
             
         } catch (error) {

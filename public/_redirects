@@ -1,3 +1,0 @@
-# Netlify SPA redirect — serve index.html for any unknown route
-# This ensures client-side routing works properly
-/*    /index.html   200

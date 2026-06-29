@@ -21,7 +21,7 @@ const projectRoutes = require('./routes');
 const userRoutes = require('./routes/userRoutes');
 
 const JWT_SECRET = process.env.JWT_SECRET || 'a_super_secret_jwt_key_that_is_long_and_random';
-const FRONTEND_URL = process.env.FRONTEND_URL || 'http://127.0.0.1:3000';
+const FRONTEND_URL = process.env.FRONTEND_URL || process.env.frontend_url || 'http://127.0.0.1:3000';
 
 // =================================================================
 // 2. INITIALIZE APP & CONNECT TO DATABASE
@@ -131,10 +131,6 @@ passport.use(new GoogleStrategy({
 ));
 
 // =================================================================
-// 6. DEFINE API ROUTES
-// =================================================================
-// Duplicate route mounting removed (already mounted on line 41)
-
 // Mount User Routes
 app.use('/', userRoutes);
 

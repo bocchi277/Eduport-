@@ -21,7 +21,6 @@ let currentCommentProjectId = null;
 
 // Initialize profile page
 function initializeProfile() {
-    console.log('Initializing teacher profile page...');
     
     // Setup character counter for bio
     const bioTextarea = document.getElementById('bio');
@@ -73,11 +72,10 @@ function populateProfileForm(user) {
     document.querySelector('.char-count').textContent = `${bioLength} / 500 characters`;
     
     // Social links
-    const socialLinks = user.socialLinks || {};
-    document.getElementById('linkedin').value = socialLinks.linkedin || '';
-    document.getElementById('github').value = socialLinks.github || '';
-    document.getElementById('portfolio').value = socialLinks.portfolio || '';
-    document.getElementById('twitter').value = socialLinks.twitter || '';
+    document.getElementById('linkedin').value = user.linkedin || '';
+    document.getElementById('github').value = user.github || '';
+    document.getElementById('portfolio').value = user.portfolio || '';
+    document.getElementById('twitter').value = user.twitter || '';
     
     // Profile image
     if (user.profileImage) {
@@ -196,7 +194,7 @@ async function handleVote(projectId, voteType, button) {
     try {
         const token = localStorage.getItem('token');
         const response = await fetch(`https://eduport-1.onrender.com/api/projects/${projectId}/${voteType}`, {
-            method: 'PUT',
+            method: 'POST',
             headers: { 'Authorization': `Bearer ${token}` }
         });
         
@@ -363,14 +361,10 @@ async function handleProfileSubmit(e) {
     formData.append('name', document.getElementById('full-name').value);
     formData.append('username', document.getElementById('username').value);
     formData.append('bio', document.getElementById('bio').value);
-    
-    const socialLinks = JSON.stringify({
-        linkedin: document.getElementById('linkedin').value,
-        github: document.getElementById('github').value,
-        portfolio: document.getElementById('portfolio').value,
-        twitter: document.getElementById('twitter').value
-    });
-    formData.append('socialLinks', socialLinks);
+    formData.append('linkedin', document.getElementById('linkedin').value);
+    formData.append('github', document.getElementById('github').value);
+    formData.append('portfolio', document.getElementById('portfolio').value);
+    formData.append('twitter', document.getElementById('twitter').value);
     
     // Add profile image if selected
     const profileImageInput = document.getElementById('profile-image-input');

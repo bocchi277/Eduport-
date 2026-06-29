@@ -26,7 +26,7 @@ async function checkAuth() {
     }
 
     try {
-        const response = await fetch('/api/users/me', {
+        const response = await fetch('https://eduport-1.onrender.com/api/users/me', {
             headers: {
                 'x-auth-token': token
             }
@@ -57,7 +57,7 @@ async function checkAuth() {
 async function loadStudentProfile() {
     try {
         const token = localStorage.getItem('token');
-        const response = await fetch(`/api/students/${currentStudentId}/profile`, {
+        const response = await fetch(`https://eduport-1.onrender.com/api/students/${currentStudentId}/profile`, {
             headers: {
                 'x-auth-token': token
             }
@@ -182,7 +182,7 @@ function displayResume(resumeUrl) {
 async function loadStudentProjects() {
     try {
         const token = localStorage.getItem('token');
-        const response = await fetch('/api/projects', {
+        const response = await fetch('https://eduport-1.onrender.com/api/projects/community', {
             headers: {
                 'x-auth-token': token
             }

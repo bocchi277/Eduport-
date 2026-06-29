@@ -39,6 +39,20 @@ const upload = multer({
 
 // --- Project Routes ---
 
+// @route   GET api/projects
+// @desc    Get all projects for the current user
+// @access  Private
+router.get('/', auth, async (req, res) => {
+  try {
+    const projects = await Project.find({ user: req.user.id })
+      .populate('user', ['name', 'profilePictureUrl'])
+      .sort({ createdAt: -1 });
+    res.json(projects);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+});
 // @route   POST api/projects
 // @desc    Create a project
 // @access  Private

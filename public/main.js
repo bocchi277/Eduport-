@@ -80,17 +80,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 const data = await response.json();
 
                 if (response.ok) {
-                    console.log('Login response data:', data); // Debug log
                     showNotification(data.message || 'Login successful!', 'success');
 
                     // Save the token and role from backend response
                     localStorage.setItem('token', data.token);
                     localStorage.setItem('userRole', data.role); // Use backend role, not selected role
-
-                    console.log('Backend returned role:', data.role); // Debug log
-                    console.log('Selected role was:', selectedRole); // Debug log
-                    console.log('Final role stored:', data.role); // Debug log
-                    console.log('Redirecting to:', data.redirectTo); // Debug log
 
                     // Clear the selected role from session storage
                     sessionStorage.removeItem('selectedRole');
