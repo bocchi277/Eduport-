@@ -68,8 +68,8 @@ document.addEventListener('DOMContentLoaded', function () {
             loginBtn.disabled = true;
 
             try {
-                // Send the data to the backend's POST /login route
-                const response = await fetch(`${API_URL}/login`, {
+                // Send the data to the backend's POST /api/users/login route
+                const response = await fetch(`${API_URL}/api/users/login`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'

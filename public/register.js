@@ -60,8 +60,8 @@ document.addEventListener('DOMContentLoaded', function () {
             signUpBtn.disabled = true;
 
             try {
-                // Send the data to the backend's POST /register route
-                const response = await fetch(`${API_URL}/register`, {
+                // Send the data to the backend's POST /api/users/register route
+                const response = await fetch(`${API_URL}/api/users/register`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'

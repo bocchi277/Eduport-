@@ -241,15 +241,10 @@ router.put('/:id/downvote', auth, async (req, res) => {
 // Add comment to a project (Teachers only)
 router.post('/:id/comments', auth, async (req, res) => {
     try {
-        console.log('Comment route hit:', req.params.id);
-        console.log('Request body:', req.body);
-        console.log('User ID:', req.user.id);
-
         const { text } = req.body;
 
         // Validate comment text first
         if (!text || typeof text !== 'string' || text.trim().length === 0) {
-            console.log('Invalid text provided:', text);
             return res.status(400).json({ message: 'Comment text is required' });
         }
 
@@ -260,23 +255,18 @@ router.post('/:id/comments', auth, async (req, res) => {
         // Check if user exists and is a teacher
         const user = await User.findById(req.user.id).select('-password');
         if (!user) {
-            console.log('User not found:', req.user.id);
             return res.status(404).json({ message: 'User not found' });
         }
 
         if (user.role !== 'teacher') {
-            console.log('User is not a teacher:', user.role);
             return res.status(403).json({ message: 'Only teachers can add comments' });
         }
 
         // Find the project
         const project = await Project.findById(req.params.id);
         if (!project) {
-            console.log('Project not found:', req.params.id);
             return res.status(404).json({ message: 'Project not found' });
         }
-
-        console.log('Project found:', project.projectName);
 
         // Create new comment
         const newComment = {
@@ -294,7 +284,6 @@ router.post('/:id/comments', auth, async (req, res) => {
 
         // Save the project
         const savedProject = await project.save();
-        console.log('Project saved with comment');
 
         // Return success response
         res.status(201).json({
